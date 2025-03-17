@@ -16,12 +16,15 @@ namespace APP.Entity.Entities
         [Column("result_id")]
         public int ResultId { get; set; }
 
+        [ForeignKey("Customer")]
         [Column("customer_id")]
         public int CustomerId { get; set; }
 
+        [ForeignKey("Guest")]
         [Column("guest_id")]
         public int GuestId { get; set; }
 
+        [ForeignKey("SkinTest")]
         [Column("skin_test_id")]
         public int SkinTestId { get; set; }
 

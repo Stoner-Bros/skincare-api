@@ -32,6 +32,12 @@ namespace APP.Entity.Entities
 
         public virtual AccountInfo AccountInfo { get; set; } = null!;
 
+        public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+
+        public virtual ICollection<Blog> Blogs { get; set; } = new List<Blog>();
+
+        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 
         public virtual ICollection<ExpiredToken> ExpiredTokens { get; set; } = new List<ExpiredToken>();

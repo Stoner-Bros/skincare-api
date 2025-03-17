@@ -16,6 +16,7 @@ namespace APP.Entity.Entities
         [Column("id")]
         public int Id { get; set; }
 
+        [ForeignKey("Booking")]
         [Column("booking_id")]
         public int BookingId { get; set; }
 
@@ -30,5 +31,6 @@ namespace APP.Entity.Entities
         public string? Notes { get; set; }
 
         public virtual TimeSlot TimeSlot { get; set; } = null!;
+        public virtual Booking Booking { get; set; } = null!;
     }
 }

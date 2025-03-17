@@ -24,14 +24,20 @@ namespace APP.Entity.Entities
         [Column("skin_therapist_id")]
         public int SkinTherapistId { get; set; }
 
+        [ForeignKey("Staff")]
         [Column("staff_id")]
         public int StaffId { get; set; }
 
+        [ForeignKey("Customer")]
         [Column("customer_id")]
         public int CustomerId { get; set; }
 
+        [ForeignKey("Guest")]
         [Column("guest_id")]
         public int GuestId { get; set; }
+
+        [Column("booking_at")]
+        public DateTime BookingAt { get; set; } = DateTime.Now;
 
         [Column("status")]
         public string Status { get; set; } = "Pending";

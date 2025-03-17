@@ -16,6 +16,7 @@ namespace APP.Entity.Entities
         [Column("schedule_id")]
         public int ScheduleId { get; set; }
 
+        [ForeignKey("SkinTherapist")]
         [Column("skin_therapist_id")]
         public int SkinTherapistId { get; set; }
 
