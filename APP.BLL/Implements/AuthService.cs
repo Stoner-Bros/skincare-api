@@ -163,7 +163,7 @@ namespace APP.BLL.Implements
                 var jwtToken = handler.ReadJwtToken(token);
                 var expiration = jwtToken.ValidTo;
 
-                result = expiration > DateTime.UtcNow && revokedToken == null;
+                result = expiration > DateTime.Now && revokedToken == null;
             }
             catch (Exception ex)
             {

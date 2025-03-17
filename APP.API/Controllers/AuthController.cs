@@ -10,7 +10,7 @@ namespace APP.API.Controllers
 {
     [Route("api/auth")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController : ApiBaseController
     {
         private readonly IAuthService _authService;
 
@@ -26,9 +26,9 @@ namespace APP.API.Controllers
 
             if (data != null)
             {
-                return Ok(HiTechApi.ResponseOk(data));
+                return ResponseOk(data);
             }
-            return Unauthorized(HiTechApi.ResponseNoData(401, "Invalid email or password."));
+            return ResponseNoData(401, "Invalid email or password.");
         }
 
         [HttpPost("refresh-token")]
@@ -38,9 +38,9 @@ namespace APP.API.Controllers
 
             if (data != null)
             {
-                return Ok(HiTechApi.ResponseOk(data));
+                return ResponseOk(data);
             }
-            return BadRequest(HiTechApi.ResponseNoData(400, "Invalid refresh token."));
+            return ResponseNoData(400, "Invalid refresh token.");
         }
 
         [HttpGet("validate-token")]
@@ -48,9 +48,9 @@ namespace APP.API.Controllers
         {
             if (await _authService.IsValidToken(token))
             {
-                return Ok(HiTechApi.ResponseOk());
+                return ResponseOk();
             }
-            return BadRequest(HiTechApi.ResponseNoData(400, "Invalid token."));
+            return ResponseNoData(400, "Invalid token.");
         }
 
         [Authorize]
@@ -60,15 +60,15 @@ namespace APP.API.Controllers
             var id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (id == null)
             {
-                return Unauthorized(HiTechApi.ResponseUnauthorized());
+                return ResponseNoData(401, "Unauthorized");
             }
             bool response = await _authService.Logout(id, request);
 
             if (response)
             {
-                return Ok(HiTechApi.ResponseOk());
+                return ResponseOk();
             }
-            return BadRequest(HiTechApi.ResponseNoData(400, "Invalid token."));
+            return ResponseNoData(400, "Invalid token.");
         }
 
         [Authorize]
@@ -78,15 +78,15 @@ namespace APP.API.Controllers
             var id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (id == null)
             {
-                return Unauthorized(HiTechApi.ResponseUnauthorized());
+                return ResponseNoData(401, "Unauthorized");
             }
             AccountResponse? data = await _authService.GetProfile(id);
 
             if (data != null)
             {
-                return Ok(HiTechApi.ResponseOk(data));
+                return ResponseOk(data);
             }
-            return NotFound(HiTechApi.ResponseNotFound());
+            return ResponseNoData(404, "Not found");
         }
 
     }

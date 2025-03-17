@@ -27,7 +27,7 @@ namespace APP.API
             }));
 
             //Add custom JWT Authentication
-            builder.AddHiTechAuthetication();
+            builder.AddAppAuthetication();
             builder.Services.AddAuthorization();
 
             // Add services to the container.
@@ -46,7 +46,7 @@ namespace APP.API
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             // Custom swagger
-            builder.AddHiTechSwagger();
+            builder.AddAppSwagger();
 
             var app = builder.Build();
 

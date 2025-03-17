@@ -13,7 +13,7 @@ namespace APP.Utility
     {
         private readonly IConfiguration _configuration;
 
-        public JwtUtil(IConfiguration configuration, ILogger<JwtUtil> logger)
+        public JwtUtil(IConfiguration configuration)
         {
             _configuration = configuration;
         }

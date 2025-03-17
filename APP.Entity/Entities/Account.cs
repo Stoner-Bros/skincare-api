@@ -18,24 +18,14 @@ namespace APP.Entity.Entities
         [Column("password")]
         public string Password { get; set; } = null!;
 
-        [Column("full_name")]
-        [MaxLength(50)]
-        public string FullName { get; set; } = null!;
+        [Column("created_at")]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        [Column("avatar")]
-        public string? Avatar { get; set; }
-
-        [Column("created_date")]
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        [Column("updated_at")]
+        public DateTime UpdateAt { get; set; } = DateTime.Now;
 
         [Column("role")]
         public string Role { get; set; } = "Customer";
-
-        [Column("last_login")]
-        public DateTime? LastLogin { get; set; }
-
-        [Column("is_active")]
-        public bool IsActive { get; set; } = false;
 
         [Column("is_deleted")]
         public bool IsDeleted { get; set; } = false;

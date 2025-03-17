@@ -6,7 +6,7 @@ namespace APP.API.Extensions
 {
     public static class WebApplicationBuilderExtensions
     {
-        public static WebApplicationBuilder AddHiTechAuthetication(this WebApplicationBuilder builder)
+        public static WebApplicationBuilder AddAppAuthetication(this WebApplicationBuilder builder)
         {
             builder.Services.AddAuthentication(options =>
             {
@@ -33,7 +33,7 @@ namespace APP.API.Extensions
             return builder;
         }
 
-        public static WebApplicationBuilder AddHiTechSwagger(this WebApplicationBuilder builder)
+        public static WebApplicationBuilder AddAppSwagger(this WebApplicationBuilder builder)
         {
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options =>

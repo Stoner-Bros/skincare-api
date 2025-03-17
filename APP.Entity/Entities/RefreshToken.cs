@@ -27,7 +27,7 @@ namespace APP.Entity.Entities
         public int AccountId { get; set; }
 
         [NotMapped]
-        public bool IsExpired => DateTime.UtcNow >= Expiry;
+        public bool IsExpired => DateTime.Now >= Expiry;
 
         [NotMapped]
         public bool IsActive => Revoked == null && !IsExpired;

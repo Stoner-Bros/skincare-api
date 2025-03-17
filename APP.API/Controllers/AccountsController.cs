@@ -9,7 +9,7 @@ namespace APP.API.Controllers
 {
     [Route("api/accounts")]
     [ApiController]
-    public class AccountsController : ControllerBase
+    public class AccountsController : ApiBaseController
     {
         private readonly IAccountService _accountService;
 
@@ -24,8 +24,7 @@ namespace APP.API.Controllers
         public async Task<ActionResult<ApiResponse<IEnumerable<AccountResponse>>>> GetAccounts()
         {
             var accounts = await _accountService.GetAllAsync();
-            var response = HiTechApi.ResponseOk(accounts);
-            return Ok(response);
+            return ResponseOk(accounts);
         }
 
         // GET: api/hitech/accounts/5
@@ -36,10 +35,10 @@ namespace APP.API.Controllers
             var account = await _accountService.GetByIDAsync(id);
 
             var response = account != null
-                ? HiTechApi.ResponseOk(account)
-                : HiTechApi.ResponseNotFound();
+                ? ResponseOk(account)
+                : ResponseNoData(404, "Account Not Found!");
 
-            return account != null ? Ok(response) : NotFound(response);
+            return response;
         }
 
         // PUT: api/hitech/accounts/5
@@ -48,7 +47,7 @@ namespace APP.API.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<ApiResponse>> PutAccount(int id, AccountUpdationRequest request)
         {
-            var response = HiTechApi.ResponseNotFound();
+            var response = ResponseNoData(404, "Account Not Found!");
 
             if (!await _accountService.AccountExists(id))
             {
@@ -61,8 +60,7 @@ namespace APP.API.Controllers
             {
                 return NoContent();
             }
-            response = HiTechApi.ResponseBadRequest();
-            return BadRequest(response);
+            return ResponseNoData(400, "Bad Request");
         }
 
         // POST: api/hitech/accounts
@@ -70,7 +68,7 @@ namespace APP.API.Controllers
         [HttpPost]
         public async Task<ActionResult<ApiResponse<AccountResponse>>> PostAccount(AccountCreationRequest request)
         {
-            var response = HiTechApi.ResponseConflict();
+            var response = ResponseNoData(409, "Account already exist");
             if (await _accountService.AccountExists(request.Email))
             {
                 return Conflict(response);
@@ -80,13 +78,10 @@ namespace APP.API.Controllers
 
             if (account == null)
             {
-                response = HiTechApi.ResponseBadRequest();
-                return BadRequest(response);
+                return ResponseNoData(400, "Bad Request");
             }
 
-            response = HiTechApi.Response(201, "Created.", account);
-            return CreatedAtAction("GetAccount",
-                new { id = ((ApiResponse<AccountResponse>)response)?.Data?.AccountId }, response);
+            return CustomResponse(201, "Created.", account);
         }
 
         // DELETE: api/hitech/accounts/5
@@ -94,7 +89,7 @@ namespace APP.API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<ApiResponse>> DeleteAccount(int id)
         {
-            var response = HiTechApi.ResponseNotFound();
+            var response = ResponseNoData(404, "Account Not Found!");
 
             if (!await _accountService.AccountExists(id))
             {
@@ -106,8 +101,7 @@ namespace APP.API.Controllers
             {
                 return NoContent();
             }
-            response = HiTechApi.ResponseBadRequest();
-            return BadRequest(response);
+            return ResponseNoData(400, "Bad Request");
         }
     }
 }
