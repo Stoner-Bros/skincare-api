@@ -14,6 +14,10 @@ namespace APP.Entity.Mapper
             CreateMap<AccountUpdationRequest, Account>();
             CreateMap<AccountUpdationRequest, AccountInfo>();
             CreateMap<Account, AccountResponse>();
+
+            CreateMap<ServiceCreationRequest, Service>();
+            CreateMap<ServiceUpdationRequest, Service>();
+            CreateMap<Service, ServiceResponse>();
         }
     }
 }

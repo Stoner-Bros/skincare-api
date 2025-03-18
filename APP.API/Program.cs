@@ -41,6 +41,7 @@ namespace APP.API
 
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IServiceService, ServiceService>();
 
             builder.Services.AddControllers();
 

@@ -12,6 +12,7 @@ namespace APP.BLL.UOW
         public IAccountInfoRepository AccountInfos { get; private set; }
         public IRefeshTokenRepository RefeshTokens { get; private set; }
         public IExpiredTokenRepository ExpiredTokens { get; private set; }
+        public IServiceRepository Services { get; private set; }
 
         public UnitOfWork(AppDbContext context)
         {
@@ -20,6 +21,7 @@ namespace APP.BLL.UOW
             AccountInfos = new AccountInfoRepository(context);
             RefeshTokens = new RefeshTokenRepository(context);
             ExpiredTokens = new ExpiredTokenRepository(context);
+            Services = new ServiceRepository(context);
         }
 
         public async Task<int> SaveAsync()

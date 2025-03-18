@@ -6,6 +6,7 @@ namespace APP.BLL.UOW
     {
         IAccountRepository Accounts { get; }
         IAccountInfoRepository AccountInfos { get; }
+        IServiceRepository Services { get; }
         IRefeshTokenRepository RefeshTokens { get; }
         IExpiredTokenRepository ExpiredTokens { get; }
         Task<int> SaveAsync();
