@@ -8,7 +8,6 @@ namespace APP.Entity.Entities
     public class Staff
     {
         [Key]
-        [ForeignKey("Account")]
         [Column("account_id")]
         public int AccountId { get; set; }
 
@@ -20,5 +19,9 @@ namespace APP.Entity.Entities
 
         // Navigation property
         public virtual Account Account { get; set; } = null!;
+        public virtual ICollection<FeedbackReply> FeedbackReplies { get; set; } = new List<FeedbackReply>();
+
+        public virtual ICollection<ConsultingForm> ConsultingForms { get; set; } = new List<ConsultingForm>();
+        public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
     }
 }

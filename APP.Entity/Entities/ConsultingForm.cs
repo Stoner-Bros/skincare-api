@@ -12,15 +12,12 @@ namespace APP.Entity.Entities
         [Column("consulting_form_id")]
         public int ConsultingFormId { get; set; }
 
-        [ForeignKey("Staff")]
         [Column("staff_id")]
         public int StaffId { get; set; }
 
-        [ForeignKey("Customer")]
         [Column("customer_id")]
         public int? CustomerId { get; set; }  // CustomerId có thể là null nếu khách không đăng ký
 
-        [ForeignKey("Guest")]
         [Column("guest_id")]
         public int? GuestId { get; set; }  // GuestId có thể là null nếu là khách hàng đã đăng ký
 

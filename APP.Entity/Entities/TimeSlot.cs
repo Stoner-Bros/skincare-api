@@ -27,5 +27,7 @@ namespace APP.Entity.Entities
 
         [Column("notes")]
         public string? Notes { get; set; }
+
+        public virtual ICollection<BookingTimeSlot> BookingTimeSlots { get; set; } = new List<BookingTimeSlot>();
     }
 }

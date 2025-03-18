@@ -14,7 +14,6 @@ namespace APP.Entity.Entities
         [Column("blog_id")]
         public int BlogId { get; set; }
 
-        [ForeignKey("Account")]
         [Column("account_id")]
         public int AccountId { get; set; }
 

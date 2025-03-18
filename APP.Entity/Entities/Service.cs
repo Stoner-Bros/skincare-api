@@ -31,5 +31,8 @@ namespace APP.Entity.Entities
 
         [Column("is_available")]
         public bool IsAvailable { get; set; } = true;
+
+        public virtual ICollection<Treatment> Treatments { get; set; } = new List<Treatment>();
+
     }
 }

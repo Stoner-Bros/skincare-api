@@ -12,7 +12,6 @@ namespace APP.Entity.Entities
         [Column("notification_id")]
         public int NotificationId { get; set; }
 
-        [ForeignKey("Account")]
         [Column("account_id")]
         public int AccountId { get; set; }
 

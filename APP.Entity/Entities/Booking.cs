@@ -16,23 +16,18 @@ namespace APP.Entity.Entities
         [Column("booking_id")]
         public int BookingId { get; set; }
 
-        [ForeignKey("Treatment")]
         [Column("treatment_id")]
         public int TreatmentId { get; set; }
 
-        [ForeignKey("SkinTherapist")]
         [Column("skin_therapist_id")]
         public int SkinTherapistId { get; set; }
 
-        [ForeignKey("Staff")]
         [Column("staff_id")]
         public int StaffId { get; set; }
 
-        [ForeignKey("Customer")]
         [Column("customer_id")]
         public int CustomerId { get; set; }
 
-        [ForeignKey("Guest")]
         [Column("guest_id")]
         public int GuestId { get; set; }
 
@@ -53,5 +48,19 @@ namespace APP.Entity.Entities
 
         [Column("notes")]
         public string? Notes { get; set; }
+
+        public virtual Treatment Treatment { get; set; } = null!;
+        public virtual TreatmentResult TreatmentResult { get; set; } = null!;
+        public virtual SkinTherapist SkinTherapist { get; set; } = null!;
+        public virtual Staff Staff { get; set; } = null!;
+        public virtual Customer Customer { get; set; } = null!;
+        public virtual Guest Guest { get; set; } = null!;
+        public virtual Feedback Feedback { get; set; } = null!;
+        public virtual Payment Payment { get; set; } = null!;
+
+
+        public virtual ICollection<BookingTimeSlot> BookingTimeSlots { get; set; } = new List<BookingTimeSlot>();
+
+
     }
 }

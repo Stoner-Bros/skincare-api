@@ -16,15 +16,12 @@ namespace APP.Entity.Entities
         [Column("result_id")]
         public int ResultId { get; set; }
 
-        [ForeignKey("Customer")]
         [Column("customer_id")]
         public int CustomerId { get; set; }
 
-        [ForeignKey("Guest")]
         [Column("guest_id")]
         public int GuestId { get; set; }
 
-        [ForeignKey("SkinTest")]
         [Column("skin_test_id")]
         public int SkinTestId { get; set; }
 
@@ -36,5 +33,9 @@ namespace APP.Entity.Entities
 
         [Column("updated_at")]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
+        public virtual SkinTest SkinTest { get; set; } = null!;
+        public virtual Customer Customer { get; set; } = null!;
+        public virtual Guest Guest { get; set; } = null!;
     }
 }

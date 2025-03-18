@@ -7,7 +7,6 @@ namespace APP.Entity.Entities
     public class SkinTherapist
     {
         [Key]
-        [ForeignKey("Account")]
         [Column("account_id")]
         public int AccountId { get; set; }
 
@@ -29,5 +28,9 @@ namespace APP.Entity.Entities
 
         // Navigation property
         public virtual Account Account { get; set; } = null!;
+        public virtual ICollection<SkinTherapistSchedule> SkinTherapistSchedules { get; set; } = new List<SkinTherapistSchedule>();
+
+
+        public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
     }
 }

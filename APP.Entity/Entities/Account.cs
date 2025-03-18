@@ -31,7 +31,9 @@ namespace APP.Entity.Entities
         public bool IsDeleted { get; set; } = false;
 
         public virtual AccountInfo AccountInfo { get; set; } = null!;
-
+        public virtual Customer Customer { get; set; } = null!;
+        public virtual Staff Staff { get; set; } = null!;
+        public virtual SkinTherapist SkinTherapist { get; set; } = null!;
         public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 
         public virtual ICollection<Blog> Blogs { get; set; } = new List<Blog>();

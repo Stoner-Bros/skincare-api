@@ -16,7 +16,6 @@ namespace APP.Entity.Entities
         [Column("payment_id")]
         public int PaymentId { get; set; }
 
-        [ForeignKey("Booking")]
         [Column("booking_id")]
         public int BookingId { get; set; }
 
@@ -40,5 +39,6 @@ namespace APP.Entity.Entities
 
         [Column("transaction_id")]
         public string? TransactionId { get; set; }
+        public virtual Booking Booking { get; set; } = null!;
     }
 }

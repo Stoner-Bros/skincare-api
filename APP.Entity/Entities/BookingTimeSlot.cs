@@ -16,11 +16,9 @@ namespace APP.Entity.Entities
         [Column("id")]
         public int Id { get; set; }
 
-        [ForeignKey("Booking")]
         [Column("booking_id")]
         public int BookingId { get; set; }
 
-        [ForeignKey("TimeSlot")]
         [Column("time_slot_id")]
         public int TimeSlotId { get; set; }
 

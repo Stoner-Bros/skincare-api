@@ -16,7 +16,6 @@ namespace APP.Entity.Entities
         [Column("result_id")]
         public int ResultId { get; set; }
 
-        [ForeignKey("Booking")]
         [Column("booking_id")]
         public int BookingId { get; set; }
 
@@ -28,5 +27,8 @@ namespace APP.Entity.Entities
 
         [Column("completed_at")]
         public DateTime? CompletedAt { get; set; }
+
+        public virtual Booking Booking { get; set; } = null!;
+
     }
 }

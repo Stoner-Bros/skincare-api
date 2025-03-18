@@ -232,6 +232,16 @@ namespace APP.API.Migrations
 
                     b.HasKey("BookingId");
 
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("GuestId");
+
+                    b.HasIndex("SkinTherapistId");
+
+                    b.HasIndex("StaffId");
+
+                    b.HasIndex("TreatmentId");
+
                     b.ToTable("booking", "dbo");
                 });
 
@@ -429,6 +439,9 @@ namespace APP.API.Migrations
 
                     b.HasKey("FeedbackId");
 
+                    b.HasIndex("BookingId")
+                        .IsUnique();
+
                     b.ToTable("feedback", "dbo");
                 });
 
@@ -464,6 +477,10 @@ namespace APP.API.Migrations
 
                     b.HasKey("FeedbackReplyId");
 
+                    b.HasIndex("FeedbackId");
+
+                    b.HasIndex("StaffId");
+
                     b.ToTable("feedback_reply", "dbo");
                 });
 
@@ -495,47 +512,6 @@ namespace APP.API.Migrations
                     b.HasKey("GuestId");
 
                     b.ToTable("guest", "dbo");
-                });
-
-            modelBuilder.Entity("APP.Entity.Entities.Message", b =>
-                {
-                    b.Property<int>("MessageId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("message_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MessageId"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("message");
-
-                    b.Property<string>("MessageType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("message_type");
-
-                    b.Property<int>("ReceiverId")
-                        .HasColumnType("int")
-                        .HasColumnName("receiver_id");
-
-                    b.Property<int>("SenderId")
-                        .HasColumnType("int")
-                        .HasColumnName("sender_id");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("status");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("updated_at");
-
-                    b.HasKey("MessageId");
-
-                    b.ToTable("message", "dbo");
                 });
 
             modelBuilder.Entity("APP.Entity.Entities.Notification", b =>
@@ -631,6 +607,9 @@ namespace APP.API.Migrations
                         .HasColumnName("updated_at");
 
                     b.HasKey("PaymentId");
+
+                    b.HasIndex("BookingId")
+                        .IsUnique();
 
                     b.ToTable("payment", "dbo");
                 });
@@ -853,6 +832,8 @@ namespace APP.API.Migrations
 
                     b.HasKey("SkinTestQuestionId");
 
+                    b.HasIndex("SkinTestId");
+
                     b.ToTable("skin_test_question", "dbo");
                 });
 
@@ -891,6 +872,12 @@ namespace APP.API.Migrations
                         .HasColumnName("updated_at");
 
                     b.HasKey("ResultId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("GuestId");
+
+                    b.HasIndex("SkinTestId");
 
                     b.ToTable("skin_test_result", "dbo");
                 });
@@ -961,6 +948,8 @@ namespace APP.API.Migrations
                         .HasColumnName("work_date");
 
                     b.HasKey("ScheduleId");
+
+                    b.HasIndex("SkinTherapistId");
 
                     b.ToTable("skin_therapist_schedule", "dbo");
                 });
@@ -1059,6 +1048,8 @@ namespace APP.API.Migrations
 
                     b.HasKey("TreatmentId");
 
+                    b.HasIndex("ServiceId");
+
                     b.ToTable("treatment", "dbo");
                 });
 
@@ -1089,6 +1080,9 @@ namespace APP.API.Migrations
 
                     b.HasKey("ResultId");
 
+                    b.HasIndex("BookingId")
+                        .IsUnique();
+
                     b.ToTable("treatment_result", "dbo");
                 });
 
@@ -1108,24 +1102,67 @@ namespace APP.API.Migrations
                     b.HasOne("APP.Entity.Entities.Account", "Account")
                         .WithMany("Blogs")
                         .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Account");
                 });
 
+            modelBuilder.Entity("APP.Entity.Entities.Booking", b =>
+                {
+                    b.HasOne("APP.Entity.Entities.Customer", "Customer")
+                        .WithMany("Bookings")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("APP.Entity.Entities.Guest", "Guest")
+                        .WithMany("Bookings")
+                        .HasForeignKey("GuestId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("APP.Entity.Entities.SkinTherapist", "SkinTherapist")
+                        .WithMany("Bookings")
+                        .HasForeignKey("SkinTherapistId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("APP.Entity.Entities.Staff", "Staff")
+                        .WithMany("Bookings")
+                        .HasForeignKey("StaffId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("APP.Entity.Entities.Treatment", "Treatment")
+                        .WithMany("Bookings")
+                        .HasForeignKey("TreatmentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Guest");
+
+                    b.Navigation("SkinTherapist");
+
+                    b.Navigation("Staff");
+
+                    b.Navigation("Treatment");
+                });
+
             modelBuilder.Entity("APP.Entity.Entities.BookingTimeSlot", b =>
                 {
                     b.HasOne("APP.Entity.Entities.Booking", "Booking")
-                        .WithMany()
+                        .WithMany("BookingTimeSlots")
                         .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("APP.Entity.Entities.TimeSlot", "TimeSlot")
-                        .WithMany()
+                        .WithMany("BookingTimeSlots")
                         .HasForeignKey("TimeSlotId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Booking");
@@ -1138,13 +1175,13 @@ namespace APP.API.Migrations
                     b.HasOne("APP.Entity.Entities.Account", "Account")
                         .WithMany("Comments")
                         .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("APP.Entity.Entities.Blog", "Blog")
                         .WithMany("Comments")
                         .HasForeignKey("BlogId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Account");
@@ -1155,17 +1192,19 @@ namespace APP.API.Migrations
             modelBuilder.Entity("APP.Entity.Entities.ConsultingForm", b =>
                 {
                     b.HasOne("APP.Entity.Entities.Customer", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId");
+                        .WithMany("ConsultingForms")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("APP.Entity.Entities.Guest", "Guest")
-                        .WithMany()
-                        .HasForeignKey("GuestId");
+                        .WithMany("ConsultingForms")
+                        .HasForeignKey("GuestId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("APP.Entity.Entities.Staff", "Staff")
-                        .WithMany()
+                        .WithMany("ConsultingForms")
                         .HasForeignKey("StaffId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Customer");
@@ -1178,8 +1217,8 @@ namespace APP.API.Migrations
             modelBuilder.Entity("APP.Entity.Entities.Customer", b =>
                 {
                     b.HasOne("APP.Entity.Entities.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
+                        .WithOne("Customer")
+                        .HasForeignKey("APP.Entity.Entities.Customer", "AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1197,15 +1236,56 @@ namespace APP.API.Migrations
                     b.Navigation("Account");
                 });
 
+            modelBuilder.Entity("APP.Entity.Entities.Feedback", b =>
+                {
+                    b.HasOne("APP.Entity.Entities.Booking", "Booking")
+                        .WithOne("Feedback")
+                        .HasForeignKey("APP.Entity.Entities.Feedback", "BookingId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Booking");
+                });
+
+            modelBuilder.Entity("APP.Entity.Entities.FeedbackReply", b =>
+                {
+                    b.HasOne("APP.Entity.Entities.Feedback", "Feedback")
+                        .WithMany("FeedbackReplies")
+                        .HasForeignKey("FeedbackId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("APP.Entity.Entities.Staff", "Staff")
+                        .WithMany("FeedbackReplies")
+                        .HasForeignKey("StaffId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Feedback");
+
+                    b.Navigation("Staff");
+                });
+
             modelBuilder.Entity("APP.Entity.Entities.Notification", b =>
                 {
                     b.HasOne("APP.Entity.Entities.Account", "Account")
                         .WithMany("Notifications")
                         .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("APP.Entity.Entities.Payment", b =>
+                {
+                    b.HasOne("APP.Entity.Entities.Booking", "Booking")
+                        .WithOne("Payment")
+                        .HasForeignKey("APP.Entity.Entities.Payment", "BookingId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Booking");
                 });
 
             modelBuilder.Entity("APP.Entity.Entities.RefreshToken", b =>
@@ -1219,26 +1299,97 @@ namespace APP.API.Migrations
                     b.Navigation("Account");
                 });
 
+            modelBuilder.Entity("APP.Entity.Entities.SkinTestQuestion", b =>
+                {
+                    b.HasOne("APP.Entity.Entities.SkinTest", "SkinTest")
+                        .WithMany("SkinTestQuestions")
+                        .HasForeignKey("SkinTestId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("SkinTest");
+                });
+
+            modelBuilder.Entity("APP.Entity.Entities.SkinTestResult", b =>
+                {
+                    b.HasOne("APP.Entity.Entities.Customer", "Customer")
+                        .WithMany("SkinTestResults")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("APP.Entity.Entities.Guest", "Guest")
+                        .WithMany("SkinTestResults")
+                        .HasForeignKey("GuestId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("APP.Entity.Entities.SkinTest", "SkinTest")
+                        .WithMany("SkinTestResults")
+                        .HasForeignKey("SkinTestId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Guest");
+
+                    b.Navigation("SkinTest");
+                });
+
             modelBuilder.Entity("APP.Entity.Entities.SkinTherapist", b =>
                 {
                     b.HasOne("APP.Entity.Entities.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
+                        .WithOne("SkinTherapist")
+                        .HasForeignKey("APP.Entity.Entities.SkinTherapist", "AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Account");
                 });
 
+            modelBuilder.Entity("APP.Entity.Entities.SkinTherapistSchedule", b =>
+                {
+                    b.HasOne("APP.Entity.Entities.SkinTherapist", "SkinTherapist")
+                        .WithMany("SkinTherapistSchedules")
+                        .HasForeignKey("SkinTherapistId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("SkinTherapist");
+                });
+
             modelBuilder.Entity("APP.Entity.Entities.Staff", b =>
                 {
                     b.HasOne("APP.Entity.Entities.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
+                        .WithOne("Staff")
+                        .HasForeignKey("APP.Entity.Entities.Staff", "AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("APP.Entity.Entities.Treatment", b =>
+                {
+                    b.HasOne("APP.Entity.Entities.Service", "Service")
+                        .WithMany("Treatments")
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Service");
+                });
+
+            modelBuilder.Entity("APP.Entity.Entities.TreatmentResult", b =>
+                {
+                    b.HasOne("APP.Entity.Entities.Booking", "Booking")
+                        .WithOne("TreatmentResult")
+                        .HasForeignKey("APP.Entity.Entities.TreatmentResult", "BookingId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Booking");
                 });
 
             modelBuilder.Entity("APP.Entity.Entities.Account", b =>
@@ -1250,16 +1401,100 @@ namespace APP.API.Migrations
 
                     b.Navigation("Comments");
 
+                    b.Navigation("Customer")
+                        .IsRequired();
+
                     b.Navigation("ExpiredTokens");
 
                     b.Navigation("Notifications");
 
                     b.Navigation("RefreshTokens");
+
+                    b.Navigation("SkinTherapist")
+                        .IsRequired();
+
+                    b.Navigation("Staff")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("APP.Entity.Entities.Blog", b =>
                 {
                     b.Navigation("Comments");
+                });
+
+            modelBuilder.Entity("APP.Entity.Entities.Booking", b =>
+                {
+                    b.Navigation("BookingTimeSlots");
+
+                    b.Navigation("Feedback")
+                        .IsRequired();
+
+                    b.Navigation("Payment")
+                        .IsRequired();
+
+                    b.Navigation("TreatmentResult")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("APP.Entity.Entities.Customer", b =>
+                {
+                    b.Navigation("Bookings");
+
+                    b.Navigation("ConsultingForms");
+
+                    b.Navigation("SkinTestResults");
+                });
+
+            modelBuilder.Entity("APP.Entity.Entities.Feedback", b =>
+                {
+                    b.Navigation("FeedbackReplies");
+                });
+
+            modelBuilder.Entity("APP.Entity.Entities.Guest", b =>
+                {
+                    b.Navigation("Bookings");
+
+                    b.Navigation("ConsultingForms");
+
+                    b.Navigation("SkinTestResults");
+                });
+
+            modelBuilder.Entity("APP.Entity.Entities.Service", b =>
+                {
+                    b.Navigation("Treatments");
+                });
+
+            modelBuilder.Entity("APP.Entity.Entities.SkinTest", b =>
+                {
+                    b.Navigation("SkinTestQuestions");
+
+                    b.Navigation("SkinTestResults");
+                });
+
+            modelBuilder.Entity("APP.Entity.Entities.SkinTherapist", b =>
+                {
+                    b.Navigation("Bookings");
+
+                    b.Navigation("SkinTherapistSchedules");
+                });
+
+            modelBuilder.Entity("APP.Entity.Entities.Staff", b =>
+                {
+                    b.Navigation("Bookings");
+
+                    b.Navigation("ConsultingForms");
+
+                    b.Navigation("FeedbackReplies");
+                });
+
+            modelBuilder.Entity("APP.Entity.Entities.TimeSlot", b =>
+                {
+                    b.Navigation("BookingTimeSlots");
+                });
+
+            modelBuilder.Entity("APP.Entity.Entities.Treatment", b =>
+                {
+                    b.Navigation("Bookings");
                 });
 #pragma warning restore 612, 618
         }

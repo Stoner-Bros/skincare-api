@@ -16,7 +16,6 @@ namespace APP.Entity.Entities
         [Column("treatment_id")]
         public int TreatmentId { get; set; }
 
-        [ForeignKey("Service")]
         [Column("service_id")]
         public int ServiceId { get; set; }
 
@@ -40,6 +39,10 @@ namespace APP.Entity.Entities
 
         [Column("is_available")]
         public bool IsAvailable { get; set; } = true;
+
+        public virtual Service Service { get; set; } = null!;
+
+        public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
     }
 
 }

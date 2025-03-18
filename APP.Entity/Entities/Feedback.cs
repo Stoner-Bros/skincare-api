@@ -16,7 +16,6 @@ namespace APP.Entity.Entities
         [Column("feedback_id")]
         public int FeedbackId { get; set; }
 
-        [ForeignKey("Booking")]
         [Column("booking_id")]
         public int BookingId { get; set; }
 
@@ -31,5 +30,8 @@ namespace APP.Entity.Entities
 
         [Column("updated_at")]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
+        public virtual Booking Booking { get; set; } = null!;
+        public virtual ICollection<FeedbackReply> FeedbackReplies { get; set; } = new List<FeedbackReply>();
+
     }
 }

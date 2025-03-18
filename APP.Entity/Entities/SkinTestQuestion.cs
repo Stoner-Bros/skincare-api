@@ -16,7 +16,6 @@ namespace APP.Entity.Entities
         [Column("skin_test_question_id")]
         public int SkinTestQuestionId { get; set; }
 
-        [ForeignKey("SkinTest")]
         [Column("skin_test_id")]
         public int SkinTestId { get; set; }
 
@@ -40,5 +39,8 @@ namespace APP.Entity.Entities
 
         [Column("updated_at")]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
+        public virtual SkinTest SkinTest { get; set; } = null!;
+
     }
 }

@@ -22,5 +22,10 @@ namespace APP.Entity.Entities
         [Column("full_name")]
         [MaxLength(50)]
         public string FullName { get; set; } = null!;
+        public virtual ICollection<SkinTestResult> SkinTestResults { get; set; } = new List<SkinTestResult>();
+
+        public virtual ICollection<ConsultingForm> ConsultingForms { get; set; } = new List<ConsultingForm>();
+
+        public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
     }
 }

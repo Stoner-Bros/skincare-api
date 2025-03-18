@@ -33,7 +33,6 @@ namespace APP.DAL
         public virtual DbSet<Feedback> Feedbacks { get; set; }
         public virtual DbSet<FeedbackReply> FeedbackReplies { get; set; }
         public virtual DbSet<Guest> Guests { get; set; }
-        public virtual DbSet<Message> Messages { get; set; }
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<Payment> Payments { get; set; }
         public virtual DbSet<Service> Services { get; set; }
@@ -62,17 +61,170 @@ namespace APP.DAL
             modelBuilder.Entity<Account>()
                 .HasMany(a => a.Notifications)
                 .WithOne(a => a.Account)
-                .HasForeignKey(a => a.AccountId);
+                .HasForeignKey(a => a.AccountId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Account>()
                 .HasMany(a => a.Blogs)
                 .WithOne(a => a.Account)
-                .HasForeignKey(a => a.AccountId);
+                .HasForeignKey(a => a.AccountId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Account>()
                 .HasMany(a => a.Comments)
                 .WithOne(a => a.Account)
-                .HasForeignKey(a => a.AccountId);
+                .HasForeignKey(a => a.AccountId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Blog>()
+                .HasMany(a => a.Comments)
+                .WithOne(a => a.Blog)
+                .HasForeignKey(a => a.BlogId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Booking>()
+                .HasOne(a => a.Treatment)
+                .WithMany(a => a.Bookings)
+                .HasForeignKey(a => a.TreatmentId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Booking>()
+                .HasOne(a => a.SkinTherapist)
+                .WithMany(a => a.Bookings)
+                .HasForeignKey(a => a.SkinTherapistId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Booking>()
+                .HasOne(a => a.Staff)
+                .WithMany(a => a.Bookings)
+                .HasForeignKey(a => a.StaffId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Booking>()
+                .HasOne(a => a.Customer)
+                .WithMany(a => a.Bookings)
+                .HasForeignKey(a => a.CustomerId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Booking>()
+                .HasOne(a => a.Guest)
+                .WithMany(a => a.Bookings)
+                .HasForeignKey(a => a.GuestId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BookingTimeSlot>()
+                .HasOne(a => a.TimeSlot)
+                .WithMany(a => a.BookingTimeSlots)
+                .HasForeignKey(a => a.TimeSlotId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BookingTimeSlot>()
+               .HasOne(a => a.Booking)
+               .WithMany(a => a.BookingTimeSlots)
+               .HasForeignKey(a => a.BookingId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ConsultingForm>()
+               .HasOne(a => a.Staff)
+               .WithMany(a => a.ConsultingForms)
+               .HasForeignKey(a => a.StaffId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ConsultingForm>()
+               .HasOne(a => a.Customer)
+               .WithMany(a => a.ConsultingForms)
+               .HasForeignKey(a => a.CustomerId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ConsultingForm>()
+               .HasOne(a => a.Guest)
+               .WithMany(a => a.ConsultingForms)
+               .HasForeignKey(a => a.GuestId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Feedback>()
+                .HasOne(a => a.Booking)
+                .WithOne(a => a.Feedback)
+                .HasForeignKey<Feedback>(a => a.BookingId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<FeedbackReply>()
+               .HasOne(a => a.Staff)
+               .WithMany(a => a.FeedbackReplies)
+               .HasForeignKey(a => a.StaffId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<FeedbackReply>()
+               .HasOne(a => a.Feedback)
+               .WithMany(a => a.FeedbackReplies)
+               .HasForeignKey(a => a.FeedbackId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Payment>()
+                .HasOne(a => a.Booking)
+                .WithOne(a => a.Payment)
+                .HasForeignKey<Payment>(a => a.BookingId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<SkinTest>()
+               .HasMany(a => a.SkinTestResults)
+               .WithOne(a => a.SkinTest)
+               .HasForeignKey(a => a.SkinTestId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<SkinTest>()
+               .HasMany(a => a.SkinTestQuestions)
+               .WithOne(a => a.SkinTest)
+               .HasForeignKey(a => a.SkinTestId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<SkinTestResult>()
+               .HasOne(a => a.Customer)
+               .WithMany(a => a.SkinTestResults)
+               .HasForeignKey(a => a.CustomerId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<SkinTestResult>()
+               .HasOne(a => a.Guest)
+               .WithMany(a => a.SkinTestResults)
+               .HasForeignKey(a => a.GuestId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Customer>()
+                .HasOne(a => a.Account)
+                .WithOne(a=> a.Customer)
+                .HasForeignKey<Customer>(a => a.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<SkinTherapist>()
+                .HasOne(a => a.Account)
+                .WithOne(a => a.SkinTherapist)
+                .HasForeignKey<SkinTherapist>(a => a.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<SkinTherapist>()
+              .HasMany(a => a.SkinTherapistSchedules)
+              .WithOne(a => a.SkinTherapist)
+              .HasForeignKey(a => a.SkinTherapistId)
+              .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Staff>()
+                .HasOne(a => a.Account)
+                .WithOne(a => a.Staff)
+                .HasForeignKey<Staff>(a => a.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Treatment>()
+                .HasOne(a => a.Service)
+                .WithMany(a => a.Treatments)
+                .HasForeignKey(a => a.ServiceId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Booking>()
+                 .HasOne(a => a.TreatmentResult)
+                 .WithOne(a => a.Booking)
+                 .HasForeignKey<TreatmentResult>(a => a.BookingId)
+                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<RefreshToken>()
                 .HasOne(rt => rt.Account)

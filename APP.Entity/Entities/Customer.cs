@@ -8,7 +8,6 @@ namespace APP.Entity.Entities
     public class Customer
     {
         [Key]
-        [ForeignKey("Account")]
         [Column("account_id")]
         public int AccountId { get; set; }
 
@@ -17,5 +16,9 @@ namespace APP.Entity.Entities
 
         // Navigation property
         public virtual Account Account { get; set; } = null!;
+        public virtual ICollection<SkinTestResult> SkinTestResults { get; set; } = new List<SkinTestResult>();
+
+        public virtual ICollection<ConsultingForm> ConsultingForms { get; set; } = new List<ConsultingForm>();
+        public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
     }
 }

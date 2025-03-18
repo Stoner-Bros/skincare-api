@@ -12,11 +12,9 @@ namespace APP.Entity.Entities
         [Column("comment_id")]
         public int CommentId { get; set; }
 
-        [ForeignKey("Account")]
         [Column("account_id")]
         public int AccountId { get; set; }
 
-        [ForeignKey("Blog")]
         [Column("blog_id")]
         public int BlogId { get; set; }
 
