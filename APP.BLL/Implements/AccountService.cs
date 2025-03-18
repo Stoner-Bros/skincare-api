@@ -5,6 +5,7 @@ using APP.Entity.DTOs.Response;
 using APP.Entity.Entities;
 using APP.Utility;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace APP.BLL.Implements
@@ -38,7 +39,7 @@ namespace APP.BLL.Implements
         {
             var account = _mapper.Map<Account>(request);
             account.Password = PasswordEncoder.Encode(request.Password);
-            account.AccountInfo = new AccountInfo();
+            account.AccountInfo = _mapper.Map<AccountInfo>(request);
 
             Account? response = null;
             try
@@ -108,6 +109,26 @@ namespace APP.BLL.Implements
         {
             var accounts = await _unitOfWork.Accounts.GetAllAsync();
             return _mapper.Map<IEnumerable<AccountResponse>>(accounts);
+        }
+
+        public async Task<PaginationModel<AccountResponse>> GetPagedAsync(int pageNumber, int pageSize)
+        {
+            var query = _unitOfWork.Accounts.GetQueryable();  // Truy vấn dữ liệu
+
+            var totalRecords = await query.CountAsync(); // Tổng số bản ghi
+            var accounts = await query
+                .OrderBy(a => a.AccountId) // Sắp xếp (có thể thay đổi)
+                .Skip((pageNumber - 1) * pageSize) // Bỏ qua các bản ghi trước đó
+                .Take(pageSize) // Lấy số lượng bản ghi cần lấy
+                .ToListAsync();
+
+            return new PaginationModel<AccountResponse>
+            {
+                Items = _mapper.Map<List<AccountResponse>>(accounts),
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalRecords = totalRecords
+            };
         }
 
         public async Task<AccountResponse?> GetByIDAsync(int id)

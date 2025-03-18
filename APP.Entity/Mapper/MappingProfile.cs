@@ -10,6 +10,7 @@ namespace APP.Entity.Mapper
         public MappingProfile()
         {
             CreateMap<AccountCreationRequest, Account>();
+            CreateMap<AccountCreationRequest, AccountInfo>();
             CreateMap<AccountUpdationRequest, Account>();
             CreateMap<AccountUpdationRequest, AccountInfo>();
             CreateMap<Account, AccountResponse>();

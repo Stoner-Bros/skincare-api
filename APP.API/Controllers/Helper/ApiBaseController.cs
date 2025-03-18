@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace APP.API.Controllers.Helper
 {
@@ -130,19 +132,29 @@ namespace APP.API.Controllers.Helper
         /// </summary>
         /// <param name="opts"></param>
         /// <returns></returns>
-        protected string? GetUserID(IdentityOptions opts)
+        protected string? GetUserID()
         {
-            return HttpContext.User.Claims.FirstOrDefault(c => c.Type == opts.ClaimsIdentity.UserIdClaimType)?.Value;
+            return HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
         }
 
         /// <summary>
-        /// Get the attached user-name from the http-context.
+        /// Get the attached email from the http-context.
         /// </summary>
         /// <param name="opts"></param>
         /// <returns></returns>
-        protected string? GetUserName(IdentityOptions opts)
+        protected string? GetUserEmail()
         {
-            return HttpContext.User.Claims.FirstOrDefault(c => c.Type == opts.ClaimsIdentity.UserNameClaimType)?.Value;
+            return HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+        }
+
+        /// <summary>
+        /// Get the attached role from the http-context.
+        /// </summary>
+        /// <param name="opts"></param>
+        /// <returns></returns>
+        protected string? GetUserRole()
+        {
+            return HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
         }
     }
 }

@@ -70,4 +70,9 @@ public abstract class GenericRepository<T, TEntity, TKey> : IGenericRepository<T
 
     public virtual async ValueTask<bool> AnyAsync(Expression<Func<TEntity, bool>> expression)
         => await _dbSet.AnyAsync(expression);
+
+    public IQueryable<TEntity> GetQueryable()
+    {
+        return _dbSet.AsQueryable();
+    }
 }

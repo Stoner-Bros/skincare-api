@@ -21,10 +21,17 @@ namespace APP.API.Controllers
         // GET: api/hitech/accounts
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<ApiResponse<IEnumerable<AccountResponse>>>> GetAccounts()
+        public async Task<ActionResult<ApiResponse<PaginationModel<AccountResponse>>>> GetAccounts(
+                [FromQuery] int pageNumber = 1,
+                [FromQuery] int pageSize = 10
+            )
         {
-            var accounts = await _accountService.GetAllAsync();
-            return ResponseOk(accounts);
+            if (pageNumber < 1 || pageSize < 1)
+                return ResponseNoData(400, "PageNumber and PageSize must greater than 0.");
+
+            var pagedAccounts = await _accountService.GetPagedAsync(pageNumber, pageSize);
+
+            return ResponseOk(pagedAccounts);
         }
 
         // GET: api/hitech/accounts/5
@@ -47,11 +54,9 @@ namespace APP.API.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<ApiResponse>> PutAccount(int id, AccountUpdationRequest request)
         {
-            var response = ResponseNoData(404, "Account Not Found!");
-
             if (!await _accountService.AccountExists(id))
             {
-                return NotFound(response);
+                return ResponseNoData(404, "Account Not Found!");
             }
 
             bool flag = await _accountService.UpdateAsync(id, request);
@@ -68,10 +73,9 @@ namespace APP.API.Controllers
         [HttpPost]
         public async Task<ActionResult<ApiResponse<AccountResponse>>> PostAccount(AccountCreationRequest request)
         {
-            var response = ResponseNoData(409, "Account already exist");
             if (await _accountService.AccountExists(request.Email))
             {
-                return Conflict(response);
+                return ResponseNoData(409, "Account already exist");
             }
 
             var account = await _accountService.CreateAsync(request);
@@ -89,11 +93,9 @@ namespace APP.API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<ApiResponse>> DeleteAccount(int id)
         {
-            var response = ResponseNoData(404, "Account Not Found!");
-
             if (!await _accountService.AccountExists(id))
             {
-                return NotFound(response);
+                return ResponseNoData(404, "Account Not Found!");
             }
 
             bool flag = await _accountService.DeleteAsync(id);

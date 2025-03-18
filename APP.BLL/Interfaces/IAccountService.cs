@@ -6,6 +6,7 @@ namespace APP.BLL.Interfaces
     public interface IAccountService
     {
         Task<IEnumerable<AccountResponse>> GetAllAsync();
+        Task<PaginationModel<AccountResponse>> GetPagedAsync(int pageNumber, int pageSize);
         Task<AccountResponse?> GetByIDAsync(int id);
         Task<AccountResponse?> GetByEmailAsync(string email);
         Task<AccountResponse?> CreateAsync(AccountCreationRequest request);
