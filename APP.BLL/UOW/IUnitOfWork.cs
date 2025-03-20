@@ -13,6 +13,7 @@ namespace APP.BLL.UOW
         IBlogRepository Blogs { get; }
         ISkinTherapistRepository SkinTherapists { get; }
         ICustomerRepository Customers { get; }
+        ICommentRepository Comments { get; }
         Task<int> SaveAsync();
         Task<int> SaveWithTransactionAsync();
         Task<int> SaveWithTransactionAsync(Func<Task> operation);
