@@ -195,6 +195,7 @@ namespace APP.BLL.Implements
             try
             {
                 var accountResponse = await _unitOfWork.Accounts.CreateAsync(account);
+                await _unitOfWork.SaveAsync();
                 await _unitOfWork.Customers.CreateAsync(new Customer
                 {
                     AccountId = accountResponse.AccountId

@@ -14,6 +14,7 @@ namespace APP.BLL.UOW
         ISkinTherapistRepository SkinTherapists { get; }
         ICustomerRepository Customers { get; }
         ICommentRepository Comments { get; }
+        IStaffRepository Staffs { get; }
         Task<int> SaveAsync();
         Task<int> SaveWithTransactionAsync();
         Task<int> SaveWithTransactionAsync(Func<Task> operation);
