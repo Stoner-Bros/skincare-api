@@ -12,6 +12,7 @@ namespace APP.BLL.UOW
         IExpiredTokenRepository ExpiredTokens { get; }
         IBlogRepository Blogs { get; }
         ISkinTherapistRepository SkinTherapists { get; }
+        ICommentRepository Comments { get; }
         Task<int> SaveAsync();
         Task<int> SaveWithTransactionAsync();
         Task<int> SaveWithTransactionAsync(Func<Task> operation);
