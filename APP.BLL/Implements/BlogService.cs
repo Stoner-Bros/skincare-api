@@ -27,7 +27,9 @@ namespace APP.BLL.Implements
 
         public async Task<PaginationModel<BlogResponse>> GetAllAsync(int pageNumber, int pageSize)
         {
-            var query = _unitOfWork.Blogs.GetQueryable();
+            var query = _unitOfWork.Blogs.GetQueryable()
+                .Include(b => b.Account)
+                .ThenInclude(a => a.AccountInfo);
 
             var totalRecords = await query.CountAsync();
             var blogs = await query
@@ -36,19 +38,26 @@ namespace APP.BLL.Implements
                 .Take(pageSize)
                 .ToListAsync();
 
+            var blogResponses = _mapper.Map<List<BlogResponse>>(blogs);
+
             return new PaginationModel<BlogResponse>
             {
-                Items = _mapper.Map<List<BlogResponse>>(blogs),
+                Items = blogResponses,
                 PageNumber = pageNumber,
                 PageSize = pageSize,
                 TotalRecords = totalRecords
             };
         }
 
+
         public async Task<BlogResponse?> GetByIDAsync(int id)
         {
             var blog = await _unitOfWork.Blogs.GetByIDAsync(id);
-            return blog == null ? null : _mapper.Map<BlogResponse>(blog);
+            var accountInfo = await _unitOfWork.AccountInfos.GetByIDAsync(blog.AccountId);
+            var response = blog == null ? null : _mapper.Map<BlogResponse>(blog);
+            if (response == null) return null;
+            response.AuthorName = accountInfo?.FullName;
+            return response;
         }
 
         public async Task<BlogResponse?> CreateAsync(int accountId, BlogCreationRequest request)
@@ -57,8 +66,14 @@ namespace APP.BLL.Implements
             blog.AccountId = accountId;
             var createdBlog = await _unitOfWork.Blogs.CreateAsync(blog);
             await _unitOfWork.SaveAsync();
-            return _mapper.Map<BlogResponse>(createdBlog);
+
+            var accountInfo = await _unitOfWork.AccountInfos.GetByIDAsync(accountId);
+            var response = _mapper.Map<BlogResponse>(createdBlog);
+            response.AuthorName = accountInfo?.FullName;
+
+            return response;
         }
+
 
         public async Task<bool> UpdateAsync(int id, BlogUpdationRequest request)
         {
