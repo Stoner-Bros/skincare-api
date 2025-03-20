@@ -27,7 +27,7 @@ namespace APP.API.Controllers
         public async Task<ActionResult<ServiceResponse>> CreateService(ServiceCreationRequest request)
         {
             var service = await _serviceService.CreateAsync(request);
-            return CreatedAtAction(nameof(GetService), new { id = service.ServiceId }, service);
+            return CreatedAtAction(nameof(GetService), new { id = service?.ServiceId }, service);
         }
 
         [HttpPut("{id}")]

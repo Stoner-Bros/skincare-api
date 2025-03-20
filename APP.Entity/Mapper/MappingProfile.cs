@@ -18,6 +18,10 @@ namespace APP.Entity.Mapper
             CreateMap<ServiceCreationRequest, Service>();
             CreateMap<ServiceUpdationRequest, Service>();
             CreateMap<Service, ServiceResponse>();
+
+            CreateMap<BlogCreationRequest, Blog>();
+            CreateMap<BlogUpdationRequest, Blog>();
+            CreateMap<Blog, BlogResponse>();
         }
     }
 }
