@@ -5,7 +5,9 @@ using APP.Entity.DTOs.Response;
 using APP.Entity.Entities;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace APP.BLL.Implements
@@ -23,10 +25,24 @@ namespace APP.BLL.Implements
             _logger = logger;
         }
 
-        public async Task<IEnumerable<BlogResponse>> GetAllAsync()
+        public async Task<PaginationModel<BlogResponse>> GetAllAsync(int pageNumber, int pageSize)
         {
-            var blogs = await _unitOfWork.Blogs.GetAllAsync();
-            return _mapper.Map<IEnumerable<BlogResponse>>(blogs);
+            var query = _unitOfWork.Blogs.GetQueryable();
+
+            var totalRecords = await query.CountAsync();
+            var blogs = await query
+                .OrderBy(b => b.BlogId)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PaginationModel<BlogResponse>
+            {
+                Items = _mapper.Map<List<BlogResponse>>(blogs),
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalRecords = totalRecords
+            };
         }
 
         public async Task<BlogResponse?> GetByIDAsync(int id)
@@ -44,7 +60,6 @@ namespace APP.BLL.Implements
             return _mapper.Map<BlogResponse>(createdBlog);
         }
 
-
         public async Task<bool> UpdateAsync(int id, BlogUpdationRequest request)
         {
             var blog = await _unitOfWork.Blogs.GetByIDAsync(id);
@@ -56,7 +71,6 @@ namespace APP.BLL.Implements
             _unitOfWork.Blogs.Update(blog);
             return await _unitOfWork.SaveAsync() > 0;
         }
-
 
         public async Task<bool> DeleteAsync(int id)
         {
@@ -81,7 +95,5 @@ namespace APP.BLL.Implements
             _unitOfWork.Blogs.Update(blog);
             return await _unitOfWork.SaveAsync() > 0;
         }
-
-
     }
 }

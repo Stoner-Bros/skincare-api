@@ -18,7 +18,16 @@ namespace APP.API.Controllers
         public BlogController(IBlogService blogService) => _blogService = blogService;
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BlogResponse>>> GetBlogs() => Ok(await _blogService.GetAllAsync());
+        public async Task<ActionResult<PaginationModel<BlogResponse>>> GetBlogs(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10
+            )
+        {
+            if (pageNumber < 1 || pageSize < 1)
+                return ResponseNoData(400, "PageNumber and PageSize must greater than 0.");
+            var pagedBlogs = await _blogService.GetAllAsync(pageNumber, pageSize);
+            return ResponseOk(pagedBlogs);
+        }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<BlogResponse>> GetBlog(int id)
