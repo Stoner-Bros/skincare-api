@@ -9,7 +9,7 @@ namespace APP.Entity.DTOs.Response
     public class CommentResponse
     {
         public int CommentId { get; set; }
-        public int AccountId { get; set; }
+        public string? AuthorName { get; set; }
         public int BlogId { get; set; }
         public string Content { get; set; } = null!;
         public DateTime CreatedAt { get; set; }

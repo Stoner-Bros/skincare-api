@@ -33,7 +33,8 @@ namespace APP.Entity.Mapper
 
             CreateMap<CommentCreationRequest, Comment>();
             CreateMap<CommentUpdationRequest, Comment>();
-            CreateMap<Comment, CommentResponse>();
+            CreateMap<Comment, CommentResponse>()
+                .ForMember(dest => dest.AuthorName, opt => opt.MapFrom(src => src.Account.AccountInfo.FullName));
 
 
         }
