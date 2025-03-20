@@ -27,13 +27,19 @@ namespace APP.BLL.Implements
 
         public async Task<IEnumerable<CommentResponse>> GetAllAsync()
         {
-            var comments = await _unitOfWork.Comments.GetAllAsync();
+            var comments = await _unitOfWork.Comments.GetQueryable()
+                .Include(c => c.Account)
+                .ThenInclude(a => a.AccountInfo)
+                .ToListAsync();
             return _mapper.Map<IEnumerable<CommentResponse>>(comments);
         }
 
         public async Task<CommentResponse?> GetByIDAsync(int id)
         {
-            var comment = await _unitOfWork.Comments.GetByIDAsync(id);
+            var comment = await _unitOfWork.Comments.GetQueryable()
+                .Include(c => c.Account)
+                .ThenInclude(a => a.AccountInfo)
+                .FirstOrDefaultAsync(c => c.CommentId == id);
             return comment == null ? null : _mapper.Map<CommentResponse>(comment);
         }
 
@@ -44,7 +50,11 @@ namespace APP.BLL.Implements
             comment.BlogId = blogId;
             var createdComment = await _unitOfWork.Comments.CreateAsync(comment);
             await _unitOfWork.SaveAsync();
-            return _mapper.Map<CommentResponse>(createdComment);
+
+            var accountInfo = await _unitOfWork.AccountInfos.GetByIDAsync(accountId);
+            var response = _mapper.Map<CommentResponse>(createdComment);
+            response.AuthorName = accountInfo?.FullName;
+            return response;
         }
 
         public async Task<bool> UpdateAsync(int id, CommentUpdationRequest request)
@@ -70,6 +80,8 @@ namespace APP.BLL.Implements
         public async Task<IEnumerable<CommentResponse>> GetByBlogIdAsync(int blogId)
         {
             var comments = await _unitOfWork.Comments.GetQueryable()
+                .Include(c => c.Account)
+                .ThenInclude(a => a.AccountInfo)
                 .Where(c => c.BlogId == blogId && !c.IsDeleted)
                 .ToListAsync();
             return _mapper.Map<IEnumerable<CommentResponse>>(comments);
