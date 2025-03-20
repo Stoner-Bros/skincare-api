@@ -185,5 +185,32 @@ namespace APP.BLL.Implements
 
             return _mapper.Map<AccountResponse>(account);
         }
+
+        public async Task<AuthResponse?> Register(AccountCreationRequest request)
+        {
+            var account = _mapper.Map<Account>(request);
+            account.Password = PasswordEncoder.Encode(request.Password);
+            account.AccountInfo = _mapper.Map<AccountInfo>(request);
+
+            try
+            {
+                var accountResponse = await _unitOfWork.Accounts.CreateAsync(account);
+                await _unitOfWork.Customers.CreateAsync(new Customer
+                {
+                    AccountId = accountResponse.AccountId
+                });
+                await _unitOfWork.SaveAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while creating the account at {Time}.", DateTime.Now);
+                return null;
+            }
+            return await Login(new LoginRequest
+            {
+                Email = request.Email,
+                Password = request.Password,
+            });
+        }
     }
 }

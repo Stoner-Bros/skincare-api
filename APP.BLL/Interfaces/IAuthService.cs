@@ -6,6 +6,7 @@ namespace APP.BLL.Interfaces
     public interface IAuthService
     {
         Task<AuthResponse?> Login(LoginRequest login);
+        Task<AuthResponse?> Register(AccountCreationRequest request);
         Task<AuthResponse?> RefreshToken(string refreshToken);
         Task<bool> Logout(string id, LogoutRequest request);
         Task<bool> IsValidToken(string token);

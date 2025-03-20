@@ -31,6 +31,18 @@ namespace APP.API.Controllers
             return ResponseNoData(401, "Invalid email or password.");
         }
 
+        [HttpPost("register")]
+        public async Task<ActionResult<ApiResponse<AuthResponse>>> Register([FromBody] AccountCreationRequest request)
+        {
+            AuthResponse? data = await _authService.Register(request);
+
+            if (data != null)
+            {
+                return ResponseOk(data);
+            }
+            return ResponseNoData(400, "Bad Request");
+        }
+
         [HttpPost("refresh-token")]
         public async Task<ActionResult<ApiResponse<AuthResponse>>> RefreshToken([FromBody] string refreshToken)
         {
