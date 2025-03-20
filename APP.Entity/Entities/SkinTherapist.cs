@@ -14,14 +14,17 @@ namespace APP.Entity.Entities
         [MaxLength(255)]
         public string? Specialization { get; set; }
 
-        [Column("yoe")]
-        public int YearsOfExperience { get; set; }
+        [Column("experience")]
+        public string? Experience { get; set; }
+
+        [Column("introduction")]
+        public string? Introduction { get; set; }
 
         [Column("bio")]
         public string? Bio { get; set; }
 
         [Column("rating")]
-        public double Rating { get; set; }
+        public double Rating { get; set; } = 0;
 
         [Column("is_available")]
         public bool IsAvailable { get; set; } = true;

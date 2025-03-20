@@ -15,6 +15,7 @@ namespace APP.BLL.UOW
         public IServiceRepository Services { get; private set; }
         public ITreatmentRepository Treatments { get; private set; }
         public IBlogRepository Blogs { get; private set; }
+        public ISkinTherapistRepository SkinTherapists { get; private set; }
 
         public UnitOfWork(AppDbContext context)
         {
@@ -26,6 +27,7 @@ namespace APP.BLL.UOW
             Services = new ServiceRepository(context);
             Treatments = new TreatmentRepository(context);
             Blogs = new BlogRepository(context);
+            SkinTherapists = new SkinTherapistRepository(context);
         }
 
         public async Task<int> SaveAsync()

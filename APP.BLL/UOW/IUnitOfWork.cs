@@ -11,6 +11,7 @@ namespace APP.BLL.UOW
         IRefeshTokenRepository RefeshTokens { get; }
         IExpiredTokenRepository ExpiredTokens { get; }
         IBlogRepository Blogs { get; }
+        ISkinTherapistRepository SkinTherapists { get; }
         Task<int> SaveAsync();
         Task<int> SaveWithTransactionAsync();
         Task<int> SaveWithTransactionAsync(Func<Task> operation);

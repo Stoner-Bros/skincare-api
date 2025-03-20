@@ -25,6 +25,10 @@ namespace APP.Entity.Mapper
             CreateMap<BlogCreationRequest, Blog>();
             CreateMap<BlogUpdationRequest, Blog>();
             CreateMap<Blog, BlogResponse>();
+
+            CreateMap<SkinTherapistCreationRequest, SkinTherapist>();
+            CreateMap<SkinTherapistUpdationRequest, SkinTherapist>();
+            CreateMap<SkinTherapist, SkinTherapistResponse>();
         }
     }
 }
