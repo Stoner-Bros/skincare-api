@@ -10,6 +10,7 @@ namespace APP.BLL.UOW
         ITreatmentRepository Treatments { get; }
         IRefeshTokenRepository RefeshTokens { get; }
         IExpiredTokenRepository ExpiredTokens { get; }
+        IBlogRepository Blogs { get; }
         Task<int> SaveAsync();
         Task<int> SaveWithTransactionAsync();
         Task<int> SaveWithTransactionAsync(Func<Task> operation);

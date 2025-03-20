@@ -43,6 +43,7 @@ namespace APP.API
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IServiceService, ServiceService>();
             builder.Services.AddScoped<ITreatmentService, TreatmentService>();
+            builder.Services.AddScoped<IBlogService, BlogService>();
 
             builder.Services.AddControllers();
 
