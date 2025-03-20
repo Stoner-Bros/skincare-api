@@ -4,6 +4,7 @@ using APP.Entity.DTOs.Request;
 using APP.Entity.DTOs.Response;
 using APP.Entity.Entities;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace APP.BLL.Implements
@@ -21,10 +22,24 @@ namespace APP.BLL.Implements
             _logger = logger;
         }
 
-        public async Task<IEnumerable<ServiceResponse>> GetAllAsync()
+        public async Task<PaginationModel<ServiceResponse>> GetAllAsync(int pageNumber, int pageSize)
         {
-            var services = await _unitOfWork.Services.GetAllAsync();
-            return _mapper.Map<IEnumerable<ServiceResponse>>(services);
+            var query = _unitOfWork.Services.GetQueryable();  // Truy vấn dữ liệu
+
+            var totalRecords = await query.CountAsync(); // Tổng số bản ghi
+            var services = await query
+                .OrderBy(a => a.ServiceId) // Sắp xếp (có thể thay đổi)
+                .Skip((pageNumber - 1) * pageSize) // Bỏ qua các bản ghi trước đó
+                .Take(pageSize) // Lấy số lượng bản ghi cần lấy
+                .ToListAsync();
+
+            return new PaginationModel<ServiceResponse>
+            {
+                Items = _mapper.Map<List<ServiceResponse>>(services),
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalRecords = totalRecords
+            };
         }
 
         public async Task<ServiceResponse?> GetByIDAsync(int id)

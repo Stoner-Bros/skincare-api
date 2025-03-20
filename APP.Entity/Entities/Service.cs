@@ -23,6 +23,9 @@ namespace APP.Entity.Entities
         [Column("service_description")]
         public string ServiceDescription { get; set; } = null!;
 
+        [Column("service_thumbnail_url")]
+        public string ServiceThumbnailUrl { get; set; } = null!;
+
         [Column("created_at")]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
