@@ -26,7 +26,7 @@ namespace APP.Entity.Entities
         public string Description { get; set; } = null!;
 
         [Column("duration")]
-        public int Duration { get; set; }
+        public int Duration { get; set; } = 0!;
 
         [Column("price")]
         public decimal Price { get; set; }

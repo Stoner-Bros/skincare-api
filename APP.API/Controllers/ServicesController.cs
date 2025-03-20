@@ -1,4 +1,5 @@
 ﻿using APP.API.Controllers.Helper;
+using APP.BLL.Implements;
 using APP.BLL.Interfaces;
 using APP.Entity.DTOs.Request;
 using APP.Entity.DTOs.Response;
@@ -14,13 +15,24 @@ namespace APP.API.Controllers
         public ServicesController(IServiceService serviceService) => _serviceService = serviceService;
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ServiceResponse>>> GetServices() => Ok(await _serviceService.GetAllAsync());
+        public async Task<ActionResult<PaginationModel<ServiceResponse>>> GetServices(
+                [FromQuery] int pageNumber = 1,
+                [FromQuery] int pageSize = 10
+            )
+        {
+            if (pageNumber < 1 || pageSize < 1)
+                return ResponseNoData(400, "PageNumber and PageSize must greater than 0.");
+
+            var pagedServices = await _serviceService.GetAllAsync(pageNumber, pageSize);
+
+            return ResponseOk(pagedServices);
+        }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ServiceResponse>> GetService(int id)
         {
             var service = await _serviceService.GetByIDAsync(id);
-            return service == null ? NotFound() : Ok(service);
+            return service == null ? _respNotFound : ResponseOk(service);
         }
 
         [HttpPost]
@@ -33,14 +45,14 @@ namespace APP.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateService(int id, ServiceUpdationRequest request)
         {
-            if (!await _serviceService.UpdateAsync(id, request)) return NotFound();
+            if (!await _serviceService.UpdateAsync(id, request)) return _respNotFound;
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteService(int id)
         {
-            if (!await _serviceService.DeleteAsync(id)) return NotFound();
+            if (!await _serviceService.DeleteAsync(id)) return _respNotFound;
             return NoContent();
         }
     }

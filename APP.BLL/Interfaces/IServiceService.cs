@@ -10,7 +10,7 @@ namespace APP.BLL.Interfaces
 {
     public interface IServiceService
     {
-        Task<IEnumerable<ServiceResponse>> GetAllAsync();
+        Task<PaginationModel<ServiceResponse>> GetAllAsync(int pageNumber, int pageSize);
         Task<ServiceResponse?> GetByIDAsync(int id);
         Task<ServiceResponse?> CreateAsync(ServiceCreationRequest request);
         Task<bool> UpdateAsync(int id, ServiceUpdationRequest request);
