@@ -24,11 +24,18 @@ namespace APP.Entity.Mapper
             
             CreateMap<BlogCreationRequest, Blog>();
             CreateMap<BlogUpdationRequest, Blog>();
-            CreateMap<Blog, BlogResponse>();
+            CreateMap<Blog, BlogResponse>()
+                .ForMember(dest => dest.AuthorName, opt => opt.MapFrom(src => src.Account.AccountInfo.FullName));
 
             CreateMap<SkinTherapistCreationRequest, SkinTherapist>();
             CreateMap<SkinTherapistUpdationRequest, SkinTherapist>();
             CreateMap<SkinTherapist, SkinTherapistResponse>();
+
+            CreateMap<CommentCreationRequest, Comment>();
+            CreateMap<CommentUpdationRequest, Comment>();
+            CreateMap<Comment, CommentResponse>();
+
+
         }
     }
 }
