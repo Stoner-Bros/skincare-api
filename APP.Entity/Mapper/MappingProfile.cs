@@ -21,7 +21,7 @@ namespace APP.Entity.Mapper
 
             CreateMap<TreatmentRequest, Treatment>();
             CreateMap<Treatment, TreatmentResponse>();
-            
+
             CreateMap<BlogCreationRequest, Blog>();
             CreateMap<BlogUpdationRequest, Blog>();
             CreateMap<Blog, BlogResponse>()
@@ -36,7 +36,11 @@ namespace APP.Entity.Mapper
             CreateMap<Comment, CommentResponse>()
                 .ForMember(dest => dest.AuthorName, opt => opt.MapFrom(src => src.Account.AccountInfo.FullName));
 
+            CreateMap<Customer, CustomerResponse>();
 
+            CreateMap<StaffCreationRequest, Staff>();
+            CreateMap<StaffUpdationRequest, Staff>();
+            CreateMap<Staff, StaffResponse>();
         }
     }
 }

@@ -6,19 +6,15 @@ using System.Threading.Tasks;
 
 namespace APP.Entity.DTOs.Request
 {
-    public class SkinTherapistCreationRequest
+    public class StaffCreationRequest
     {
         public string Email { get; set; } = null!;
         public string Password { get; set; } = null!;
         public string FullName { get; set; } = null!;
-
-        public string? Specialization { get; set; }
-        public string? Experience { get; set; }
-        public string? Introduction { get; set; }
-        public string? Bio { get; set; }
+        public DateOnly StartDate { get; set; } = DateOnly.FromDateTime(DateTime.Today);
     }
 
-    public class SkinTherapistUpdationRequest
+    public class StaffUpdationRequest
     {
         public string? FullName { get; set; } = null!;
         public string? Avatar { get; set; }
@@ -27,10 +23,7 @@ namespace APP.Entity.DTOs.Request
         public DateOnly? Dob { get; set; }
         public string? OtherInfo { get; set; }
 
-        public string? Specialization { get; set; }
-        public string? Experience { get; set; }
-        public string? Introduction { get; set; }
-        public string? Bio { get; set; }
+        public DateOnly? StartDate { get; set; }
         public bool? IsAvailable { get; set; }
     }
 }

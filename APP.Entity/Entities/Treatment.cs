@@ -22,6 +22,9 @@ namespace APP.Entity.Entities
         [Column("treatment_name")]
         public string TreatmentName { get; set; } = null!;
 
+        [Column("treatment_thumbnail_url")]
+        public string TreatmentThumbnailUrl { get; set; } = null!;
+
         [Column("description")]
         public string Description { get; set; } = null!;
 

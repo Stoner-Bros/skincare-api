@@ -68,26 +68,6 @@ namespace APP.API.Controllers
             return ResponseNoData(400, "Bad Request");
         }
 
-        // POST: api/hitech/accounts
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<ApiResponse<AccountResponse>>> PostAccount(AccountCreationRequest request)
-        {
-            if (await _accountService.AccountExists(request.Email))
-            {
-                return ResponseNoData(409, "Account already exist");
-            }
-
-            var account = await _accountService.CreateAsync(request);
-
-            if (account == null)
-            {
-                return ResponseNoData(400, "Bad Request");
-            }
-
-            return CustomResponse(201, "Created.", account);
-        }
-
         // DELETE: api/hitech/accounts/5
         [Authorize]
         [HttpDelete("{id}")]

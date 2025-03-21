@@ -13,10 +13,13 @@ namespace APP.API.Controllers
     public class AuthController : ApiBaseController
     {
         private readonly IAuthService _authService;
+        private readonly IAccountService _accountService;
 
-        public AuthController(IAuthService authService)
+
+        public AuthController(IAuthService authService, IAccountService accountService)
         {
             _authService = authService;
+            _accountService = accountService;
         }
 
         [HttpPost("login")]
@@ -34,6 +37,11 @@ namespace APP.API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<ApiResponse<AuthResponse>>> Register([FromBody] AccountCreationRequest request)
         {
+            if (await _accountService.AccountExists(request.Email))
+            {
+                return ResponseNoData(409, "Email already exist");
+            }
+
             AuthResponse? data = await _authService.Register(request);
 
             if (data != null)

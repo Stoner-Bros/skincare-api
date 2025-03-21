@@ -12,7 +12,7 @@ namespace APP.Entity.Entities
         public int AccountId { get; set; }
 
         [Column("start_date")]
-        public DateTime StartDate { get; set; }
+        public DateOnly StartDate { get; set; }
 
         [Column("is_available")]
         public bool IsAvailable { get; set; } = true;

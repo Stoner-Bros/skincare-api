@@ -46,6 +46,8 @@ namespace APP.API
             builder.Services.AddScoped<IBlogService, BlogService>();
             builder.Services.AddScoped<ISkinTherapistService, SkinTherapistService>();
             builder.Services.AddScoped<ICommentService, CommentService>();
+            builder.Services.AddScoped<ICustomerService, CustomerService>();
+            builder.Services.AddScoped<IStaffService, StaffService>();
 
             builder.Services.AddControllers();
 

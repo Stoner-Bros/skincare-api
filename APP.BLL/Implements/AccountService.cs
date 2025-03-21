@@ -166,7 +166,7 @@ namespace APP.BLL.Implements
                 {
                     _mapper.Map(request, account);
                     _mapper.Map(request, account.AccountInfo);
-
+                    account.UpdateAt = DateTime.Now;
                     _unitOfWork.Accounts.Update(account);
                     result = await _unitOfWork.SaveAsync() > 0;
                 }

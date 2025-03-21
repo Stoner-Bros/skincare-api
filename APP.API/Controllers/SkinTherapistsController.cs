@@ -12,7 +12,13 @@ namespace APP.API.Controllers
     public class SkinTherapistsController : ApiBaseController
     {
         private readonly ISkinTherapistService _skinTherapistService;
-        public SkinTherapistsController(ISkinTherapistService skinTherapistService) => _skinTherapistService = skinTherapistService;
+        private readonly IAccountService _accountService;
+
+        public SkinTherapistsController(ISkinTherapistService skinTherapistService, IAccountService accountService)
+        {
+            _skinTherapistService = skinTherapistService;
+            _accountService = accountService;
+        }
 
         [HttpGet]
         public async Task<ActionResult<PaginationModel<SkinTherapistResponse>>> GetSkinTherapists(
@@ -38,8 +44,19 @@ namespace APP.API.Controllers
         [HttpPost]
         public async Task<ActionResult<SkinTherapistResponse>> CreateSkinTherapist(SkinTherapistCreationRequest request)
         {
+            if (await _accountService.AccountExists(request.Email))
+            {
+                return ResponseNoData(409, "Email already exist");
+            }
+
             var therapist = await _skinTherapistService.CreateAsync(request);
-            return CreatedAtAction(nameof(GetSkinTherapist), new { id = therapist?.AccountId }, therapist);
+
+            if (therapist == null)
+            {
+                return ResponseNoData(400, "Bad Request");
+            }
+
+            return CustomResponse(201, "Created.", therapist);
         }
 
         [HttpPut("{id}")]
