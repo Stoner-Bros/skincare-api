@@ -15,6 +15,7 @@ namespace APP.BLL.UOW
         ICustomerRepository Customers { get; }
         ICommentRepository Comments { get; }
         IStaffRepository Staffs { get; }
+        ITimeSlotRepository TimeSlots { get; }
         Task<int> SaveAsync();
         Task<int> SaveWithTransactionAsync();
         Task<int> SaveWithTransactionAsync(Func<Task> operation);

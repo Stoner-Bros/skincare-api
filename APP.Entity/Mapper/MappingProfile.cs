@@ -41,6 +41,8 @@ namespace APP.Entity.Mapper
             CreateMap<StaffCreationRequest, Staff>();
             CreateMap<StaffUpdationRequest, Staff>();
             CreateMap<Staff, StaffResponse>();
+
+            CreateMap<TimeSlot, TimeSlotResponse>();
         }
     }
 }

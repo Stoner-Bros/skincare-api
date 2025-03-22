@@ -48,6 +48,7 @@ namespace APP.API
             builder.Services.AddScoped<ICommentService, CommentService>();
             builder.Services.AddScoped<ICustomerService, CustomerService>();
             builder.Services.AddScoped<IStaffService, StaffService>();
+            builder.Services.AddScoped<ITimeSlotService, TimeSlotService>();
 
             builder.Services.AddControllers();
 

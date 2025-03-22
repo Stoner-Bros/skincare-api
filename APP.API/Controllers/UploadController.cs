@@ -48,6 +48,22 @@ namespace APP.API.Controllers
             return ResponseOk(new { fileName = uniqueFileName, path = $"/Uploads/{uniqueFileName}" });
         }
 
+        /// <summary>
+        /// Lấy danh sách tất cả file trong thư mục Uploads.
+        /// </summary>
+        [HttpGet("all-files")]
+        public IActionResult GetAllFiles()
+        {
+            var files = Directory.GetFiles(_uploadPath)
+                                 .Select(Path.GetFileName)
+                                 .ToList();
+
+            if (files.Count == 0)
+                return _respNotFound;
+
+            return ResponseOk(new { files });
+        }
+
         [HttpGet("{fileName}")]
         public IActionResult GetImage(string fileName)
         {
