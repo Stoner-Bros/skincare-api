@@ -25,15 +25,6 @@ namespace APP.BLL.Implements
             _logger = logger;
         }
 
-        public async Task<IEnumerable<CommentResponse>> GetAllAsync()
-        {
-            var comments = await _unitOfWork.Comments.GetQueryable()
-                .Include(c => c.Account)
-                .ThenInclude(a => a.AccountInfo)
-                .ToListAsync();
-            return _mapper.Map<IEnumerable<CommentResponse>>(comments);
-        }
-
         public async Task<CommentResponse?> GetByIDAsync(int id)
         {
             var comment = await _unitOfWork.Comments.GetQueryable()
@@ -54,6 +45,7 @@ namespace APP.BLL.Implements
             var accountInfo = await _unitOfWork.AccountInfos.GetByIDAsync(accountId);
             var response = _mapper.Map<CommentResponse>(createdComment);
             response.AuthorName = accountInfo?.FullName;
+
             return response;
         }
 
@@ -77,14 +69,29 @@ namespace APP.BLL.Implements
             return await _unitOfWork.SaveAsync() > 0;
         }
 
-        public async Task<IEnumerable<CommentResponse>> GetByBlogIdAsync(int blogId)
+        public async Task<PaginationModel<CommentResponse>> GetByBlogIdAsync(int blogId, int pageNumber, int pageSize)
         {
-            var comments = await _unitOfWork.Comments.GetQueryable()
+            var query = _unitOfWork.Comments.GetQueryable()
                 .Include(c => c.Account)
                 .ThenInclude(a => a.AccountInfo)
-                .Where(c => c.BlogId == blogId && !c.IsDeleted)
+                .Where(c => c.BlogId == blogId && !c.IsDeleted);
+
+            var totalRecords = await query.CountAsync();
+            var comments = await query
+                .OrderBy(c => c.CommentId)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
-            return _mapper.Map<IEnumerable<CommentResponse>>(comments);
+
+            var commentResponses = _mapper.Map<List<CommentResponse>>(comments);
+
+            return new PaginationModel<CommentResponse>
+            {
+                Items = commentResponses,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalRecords = totalRecords
+            };
         }
     }
 }

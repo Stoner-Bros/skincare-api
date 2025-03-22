@@ -17,9 +17,6 @@ namespace APP.API.Controllers
         private readonly ICommentService _commentService;
         public CommentController(ICommentService commentService) => _commentService = commentService;
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<CommentResponse>>> GetComments() => Ok(await _commentService.GetAllAsync());
-
         [HttpGet("{id}")]
         public async Task<ActionResult<CommentResponse>> GetComment(int id)
         {
@@ -56,10 +53,10 @@ namespace APP.API.Controllers
         }
 
         [HttpGet("blog/{blogId}")]
-        public async Task<ActionResult<IEnumerable<CommentResponse>>> GetCommentsByBlogId(int blogId)
+        public async Task<ActionResult<PaginationModel<CommentResponse>>> GetCommentsByBlogId(int blogId, int pageNumber, int pageSize)
         {
-            var comments = await _commentService.GetByBlogIdAsync(blogId);
-            return Ok(comments);
+            var pagedComments = await _commentService.GetByBlogIdAsync(blogId, pageNumber, pageSize);
+            return Ok(pagedComments);
         }
     }
 }
