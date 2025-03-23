@@ -49,6 +49,30 @@ namespace APP.BLL.Implements
             };
         }
 
+        public async Task<PaginationModel<BlogResponse>> GetPublishedBlogsAsync(int pageNumber, int pageSize)
+        {
+            var query = _unitOfWork.Blogs.GetQueryable()
+                .Include(b => b.Account)
+                .ThenInclude(a => a.AccountInfo)
+                .Where(b => b.PublishAt != null);
+
+            var totalRecords = await query.CountAsync();
+            var blogs = await query
+                .OrderBy(b => b.BlogId)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var blogResponses = _mapper.Map<List<BlogResponse>>(blogs);
+
+            return new PaginationModel<BlogResponse>
+            {
+                Items = blogResponses,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalRecords = totalRecords
+            };
+        }
 
         public async Task<BlogResponse?> GetByIDAsync(int id)
         {
@@ -73,7 +97,6 @@ namespace APP.BLL.Implements
 
             return response;
         }
-
 
         public async Task<bool> UpdateAsync(int id, BlogUpdationRequest request)
         {
