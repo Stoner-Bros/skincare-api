@@ -30,7 +30,9 @@ namespace APP.BLL.Implements
 
         public async Task<PaginationModel<StaffResponse>> GetAllAsync(int pageNumber, int pageSize)
         {
-            var query = _unitOfWork.Staffs.GetQueryable();  // Truy vấn dữ liệu
+            var query = _unitOfWork.Staffs.GetQueryable()
+                                    .Include(s => s.Account)
+                                    .ThenInclude(a => a.AccountInfo);  // Truy vấn dữ liệu
 
             var totalRecords = await query.CountAsync(); // Tổng số bản ghi
             var accounts = await query

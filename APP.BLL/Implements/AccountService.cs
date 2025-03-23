@@ -113,7 +113,8 @@ namespace APP.BLL.Implements
 
         public async Task<PaginationModel<AccountResponse>> GetPagedAsync(int pageNumber, int pageSize)
         {
-            var query = _unitOfWork.Accounts.GetQueryable();  // Truy vấn dữ liệu
+            var query = _unitOfWork.Accounts.GetQueryable()
+                                   .Include(a => a.AccountInfo);  // Truy vấn dữ liệu
 
             var totalRecords = await query.CountAsync(); // Tổng số bản ghi
             var accounts = await query

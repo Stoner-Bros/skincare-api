@@ -31,7 +31,9 @@ namespace APP.BLL.Implements
 
         public async Task<PaginationModel<SkinTherapistResponse>> GetAllAsync(int pageNumber, int pageSize)
         {
-            var query = _unitOfWork.SkinTherapists.GetQueryable();  // Truy vấn dữ liệu
+            var query = _unitOfWork.SkinTherapists.GetQueryable()
+                                    .Include(s => s.Account)
+                                    .ThenInclude(a => a.AccountInfo);  // Truy vấn dữ liệu
 
             var totalRecords = await query.CountAsync(); // Tổng số bản ghi
             var accounts = await query
