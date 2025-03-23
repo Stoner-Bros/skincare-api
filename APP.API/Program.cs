@@ -49,6 +49,8 @@ namespace APP.API
             builder.Services.AddScoped<ICustomerService, CustomerService>();
             builder.Services.AddScoped<IStaffService, StaffService>();
             builder.Services.AddScoped<ITimeSlotService, TimeSlotService>();
+            builder.Services.AddScoped<ISkinTestService, SkinTestService>();
+            builder.Services.AddScoped<ISkinTestQuestionService, SkinTestQuestionService>();
 
             builder.Services.AddControllers();
 

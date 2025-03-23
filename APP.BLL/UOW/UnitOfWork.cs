@@ -1,4 +1,5 @@
-﻿using APP.DAL;
+﻿using APP.BLL.Interfaces;
+using APP.DAL;
 using APP.DAL.Implements;
 
 namespace APP.BLL.UOW
@@ -20,6 +21,8 @@ namespace APP.BLL.UOW
         public IStaffRepository Staffs { get; private set; }
         public ICommentRepository Comments { get; private set; }
         public ITimeSlotRepository TimeSlots { get; private set; }
+        public ISkinTestRepository SkinTests { get; private set; }
+        public ISkinTestQuestionRepository SkinTestQuestions { get; private set; }
 
         public UnitOfWork(AppDbContext context)
         {
@@ -36,6 +39,8 @@ namespace APP.BLL.UOW
             Comments = new CommentRepository(context);
             Staffs = new StaffRepository(context);
             TimeSlots = new TimeSlotRepository(context);
+            SkinTests = new SkinTestRepository(context);
+            SkinTestQuestions = new SkinTestQuestionRepository(context);
         }
 
         public async Task<int> SaveAsync()
