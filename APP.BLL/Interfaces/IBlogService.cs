@@ -13,5 +13,6 @@ namespace APP.BLL.Interfaces
         Task<bool> UpdateAsync(int id, BlogUpdationRequest request);
         Task<bool> DeleteAsync(int id);
         Task<bool> PublishAsync(int id);
+        Task<PaginationModel<BlogResponse>> GetPublishedBlogsAsync(int pageNumber, int pageSize);
     }
 }

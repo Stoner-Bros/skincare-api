@@ -57,7 +57,6 @@ namespace APP.API.Controllers
             return NoContent();
         }
 
-
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBlog(int id)
         {
@@ -79,6 +78,16 @@ namespace APP.API.Controllers
             }
         }
 
-
+        [HttpGet("published")]
+        public async Task<ActionResult<PaginationModel<BlogResponse>>> GetPublishedBlogs(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10
+            )
+        {
+            if (pageNumber < 1 || pageSize < 1)
+                return ResponseNoData(400, "PageNumber and PageSize must greater than 0.");
+            var pagedBlogs = await _blogService.GetPublishedBlogsAsync(pageNumber, pageSize);
+            return ResponseOk(pagedBlogs);
+        }
     }
 }
