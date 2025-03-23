@@ -43,6 +43,15 @@ namespace APP.Entity.Mapper
             CreateMap<Staff, StaffResponse>();
 
             CreateMap<TimeSlot, TimeSlotResponse>();
+
+            CreateMap<SkinTestCreationRequest, SkinTest>();
+            CreateMap<SkinTestUpdationRequest, SkinTest>();
+            CreateMap<SkinTest, SkinTestResponse>()
+                .ForMember(dest => dest.SkinTestQuestions, opt => opt.MapFrom(src => src.SkinTestQuestions));
+
+            CreateMap<SkinTestQuestionCreationRequest, SkinTestQuestion>();
+            CreateMap<SkinTestQuestionUpdationRequest, SkinTestQuestion>();
+            CreateMap<SkinTestQuestion, SkinTestQuestionResponse>();
         }
     }
 }
