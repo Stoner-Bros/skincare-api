@@ -20,16 +20,16 @@ namespace APP.Entity.Entities
         public int TreatmentId { get; set; }
 
         [Column("skin_therapist_id")]
-        public int SkinTherapistId { get; set; }
+        public int? SkinTherapistId { get; set; }
 
         [Column("staff_id")]
-        public int StaffId { get; set; }
+        public int? StaffId { get; set; }
 
         [Column("customer_id")]
-        public int CustomerId { get; set; }
+        public int? CustomerId { get; set; }
 
         [Column("guest_id")]
-        public int GuestId { get; set; }
+        public int? GuestId { get; set; }
 
         [Column("booking_at")]
         public DateTime BookingAt { get; set; } = DateTime.Now;
