@@ -23,7 +23,7 @@ namespace APP.Entity.Entities
         public int TimeSlotId { get; set; }
 
         [Column("date")]
-        public DateTime Date { get; set; }
+        public DateOnly Date { get; set; }
 
         [Column("notes")]
         public string? Notes { get; set; }
