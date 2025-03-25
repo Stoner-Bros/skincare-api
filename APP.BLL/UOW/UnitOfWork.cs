@@ -23,6 +23,7 @@ namespace APP.BLL.UOW
         public ITimeSlotRepository TimeSlots { get; private set; }
         public ISkinTestRepository SkinTests { get; private set; }
         public ISkinTestQuestionRepository SkinTestQuestions { get; private set; }
+        public ISkinTestAnswerRepository SkinTestAnswers { get; private set; }
 
         public UnitOfWork(AppDbContext context)
         {
@@ -41,6 +42,7 @@ namespace APP.BLL.UOW
             TimeSlots = new TimeSlotRepository(context);
             SkinTests = new SkinTestRepository(context);
             SkinTestQuestions = new SkinTestQuestionRepository(context);
+            SkinTestAnswers = new SkinTestAnswerRepository(context);
         }
 
         public async Task<int> SaveAsync()
