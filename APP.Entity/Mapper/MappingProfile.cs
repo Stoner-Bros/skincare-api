@@ -52,6 +52,10 @@ namespace APP.Entity.Mapper
             CreateMap<SkinTestQuestionCreationRequest, SkinTestQuestion>();
             CreateMap<SkinTestQuestionUpdationRequest, SkinTestQuestion>();
             CreateMap<SkinTestQuestion, SkinTestQuestionResponse>();
+
+            CreateMap<SkinTestAnswer, SkinTestAnswerResponse>()
+                .ForMember(dest => dest.SkinTest, opt => opt.MapFrom(src => src.SkinTest));
+            CreateMap<SkinTestAnswerRequest, SkinTestAnswer>();
         }
     }
 }
