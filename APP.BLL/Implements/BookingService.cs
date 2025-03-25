@@ -34,13 +34,23 @@ namespace APP.BLL.Implements
                          .Select(b => new
                          {
                              b.BookingId,
-                             b.TreatmentId,
                              b.BookingAt,
                              b.Status,
                              b.CheckinAt,
                              b.CheckoutAt,
                              b.TotalPrice,
                              b.Notes,
+
+                             Treatment = new
+                             {
+                                 b.Treatment.TreatmentId,
+                                 b.Treatment.TreatmentName,
+                                 BelongToService = new
+                                 {
+                                     b.Treatment.Service.ServiceId,
+                                     b.Treatment.Service.ServiceName,
+                                 }
+                             },
 
                              SkinTherapist = b.SkinTherapistId != null ? new
                              {
@@ -98,13 +108,23 @@ namespace APP.BLL.Implements
                          .Select(b => new
                          {
                              b.BookingId,
-                             b.TreatmentId,
                              b.BookingAt,
                              b.Status,
                              b.CheckinAt,
                              b.CheckoutAt,
                              b.TotalPrice,
                              b.Notes,
+
+                             Treatment = new
+                             {
+                                 b.Treatment.TreatmentId,
+                                 b.Treatment.TreatmentName,
+                                 BelongToService = new
+                                 {
+                                     b.Treatment.Service.ServiceId,
+                                     b.Treatment.Service.ServiceName,
+                                 }
+                             },
 
                              SkinTherapist = b.SkinTherapistId != null ? new
                              {
@@ -137,14 +157,45 @@ namespace APP.BLL.Implements
                                  bts.TimeSlot.EndTime,
                              }).ToList() // Giữ lại để đảm bảo dữ liệu dạng List trong kết quả
                          });
-            return booking;
+            return booking.Any() ? booking.ElementAt(0) : null;
         }
 
         public async Task<bool> CreateAsync(BookingCreationRequest request)
         {
+            var customerAccount = await _unitOfWork.Accounts.GetByEmailAsync(request.Email);
+            if (customerAccount != null && customerAccount.Role != "Customer")
+            {
+                throw new Exception("Email exist in another role.");
+            }
+
             var result = await _unitOfWork.SaveWithTransactionAsync(async () =>
             {
                 var booking = _mapper.Map<Booking>(request);
+                if (customerAccount == null)
+                {
+                    var existingGuest = await _unitOfWork.Guests.GetByEmailAsync(request.Email);
+                    if (existingGuest == null)
+                    {
+                        var guest = new Guest
+                        {
+                            Email = request.Email,
+                            Phone = request.Phone,
+                            FullName = request.FullName,
+                        };
+                        var createdGuest = await _unitOfWork.Guests.CreateAsync(guest);
+                        await _unitOfWork.SaveAsync();
+                        booking.GuestId = createdGuest.GuestId;
+                    }
+                    else
+                    {
+                        booking.GuestId = existingGuest.GuestId;
+                    }
+                }
+                else
+                {
+                    booking.CustomerId = customerAccount.AccountId;
+                }
+
                 var treatment = await _unitOfWork.Treatments.GetByIDAsync(request.TreatmentId);
 
                 if (treatment != null && treatment.Price > 0)
@@ -165,7 +216,6 @@ namespace APP.BLL.Implements
                     await _unitOfWork.BookingTimeSlots.CreateAsync(bookingTimeSlot);
                 }
 
-                await _unitOfWork.SaveAsync();
             }) > 0;
 
 

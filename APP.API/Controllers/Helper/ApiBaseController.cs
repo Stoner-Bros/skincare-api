@@ -99,6 +99,11 @@ namespace APP.API.Controllers.Helper
         protected static readonly ObjectResult _respAuthenticationRequired = ResponseNoData(401, "Authentication required.");
 
         /// <summary>
+        /// Generic response for "400 Bad Request" errors.
+        /// </summary>
+        protected static readonly ObjectResult _respBadRequest = ResponseNoData(400, "Bad Request.");
+
+        /// <summary>
         /// Generic response for "403 Forbidden" errors.
         /// </summary>
         protected static readonly ObjectResult _respAccessDenied = ResponseNoData(403, "Access denied.");
