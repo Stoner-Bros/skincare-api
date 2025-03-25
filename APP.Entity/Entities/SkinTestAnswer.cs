@@ -28,5 +28,6 @@ namespace APP.Entity.Entities
         public virtual SkinTest SkinTest { get; set; } = null!;
         public virtual Customer? Customer { get; set; }
         public virtual Guest? Guest { get; set; }
+        public virtual SkinTestResult SkinTestResults { get; set; } = null!;
     }
 }
