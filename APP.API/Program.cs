@@ -52,8 +52,9 @@ namespace APP.API
             builder.Services.AddScoped<ISkinTestService, SkinTestService>();
             builder.Services.AddScoped<ISkinTestQuestionService, SkinTestQuestionService>();
             builder.Services.AddScoped<ISkinTestAnswerService, SkinTestAnswerService>();
+            builder.Services.AddScoped<IBookingService, BookingService>();
             builder.Services.AddScoped<ISkinTestResultService, SkinTestResultService>();
-
+          
             builder.Services.AddControllers();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
