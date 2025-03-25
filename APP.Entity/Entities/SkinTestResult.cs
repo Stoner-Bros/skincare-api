@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace APP.Entity.Entities
 {
@@ -17,13 +14,13 @@ namespace APP.Entity.Entities
         public int ResultId { get; set; }
 
         [Column("customer_id")]
-        public int CustomerId { get; set; }
+        public int? CustomerId { get; set; }
 
         [Column("guest_id")]
-        public int GuestId { get; set; }
+        public int? GuestId { get; set; }
 
-        [Column("skin_test_id")]
-        public int SkinTestId { get; set; }
+        [Column("skin_test_answer_id")]
+        public int SkinTestAnswerId { get; set; }
 
         [Column("result")]
         public string Result { get; set; } = null!;
@@ -32,9 +29,9 @@ namespace APP.Entity.Entities
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         [Column("updated_at")]
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; } = DateTime.Now;
 
-        public virtual SkinTest SkinTest { get; set; } = null!;
+        public virtual SkinTestAnswer SkinTestAnswer { get; set; } = null!;
         public virtual Customer Customer { get; set; } = null!;
         public virtual Guest Guest { get; set; } = null!;
     }

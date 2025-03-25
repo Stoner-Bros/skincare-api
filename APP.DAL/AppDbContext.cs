@@ -152,12 +152,6 @@ namespace APP.DAL
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<SkinTest>()
-               .HasMany(a => a.SkinTestResults)
-               .WithOne(a => a.SkinTest)
-               .HasForeignKey(a => a.SkinTestId)
-               .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<SkinTest>()
                .HasMany(a => a.SkinTestQuestions)
                .WithOne(a => a.SkinTest)
                .HasForeignKey(a => a.SkinTestId)
@@ -180,6 +174,12 @@ namespace APP.DAL
                .WithMany(a => a.SkinTestResults)
                .HasForeignKey(a => a.GuestId)
                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<SkinTestResult>()
+                .HasOne(a => a.SkinTestAnswer)
+                .WithOne(a => a.SkinTestResults)
+                .HasForeignKey<SkinTestResult>(a => a.SkinTestAnswerId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Customer>()
                 .HasOne(a => a.Account)

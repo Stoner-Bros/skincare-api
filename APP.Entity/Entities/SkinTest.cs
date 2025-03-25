@@ -28,7 +28,6 @@ namespace APP.Entity.Entities
         [Column("updated_at")]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        public virtual ICollection<SkinTestResult> SkinTestResults { get; set; } = new List<SkinTestResult>();
 
         public virtual ICollection<SkinTestQuestion> SkinTestQuestions { get; set; } = new List<SkinTestQuestion>();
         public virtual ICollection<SkinTestAnswer> SkinTestAnswer { get; set; } = new List<SkinTestAnswer>();
