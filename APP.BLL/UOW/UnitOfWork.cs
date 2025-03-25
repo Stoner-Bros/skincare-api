@@ -25,6 +25,7 @@ namespace APP.BLL.UOW
         public ISkinTestQuestionRepository SkinTestQuestions { get; private set; }
         public IBookingRepository Bookings { get; private set; }
         public IBookingTimeSlotRepository BookingTimeSlots { get; private set; }
+        public ISkinTestAnswerRepository SkinTestAnswers { get; private set; }
 
         public UnitOfWork(AppDbContext context)
         {
@@ -45,6 +46,7 @@ namespace APP.BLL.UOW
             SkinTestQuestions = new SkinTestQuestionRepository(context);
             Bookings = new BookingRepository(context);
             BookingTimeSlots = new BookingTimeSlotRepository(context);
+            SkinTestAnswers = new SkinTestAnswerRepository(context);
         }
 
         public async Task<int> SaveAsync()

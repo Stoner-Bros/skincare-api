@@ -5,22 +5,7 @@ namespace APP.DAL
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-        {
-            //try
-            //{
-            //    var databaseCreator = Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator;
-            //    if (databaseCreator != null)
-            //    {
-            //        if (!databaseCreator.CanConnect()) databaseCreator.Create();
-            //        if (!databaseCreator.HasTables()) databaseCreator.CreateTables();
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine(ex.Message);
-            //}
-        }
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public virtual DbSet<Account> Accounts { get; set; }
         public virtual DbSet<AccountInfo> AccountInfos { get; set; }
@@ -40,13 +25,13 @@ namespace APP.DAL
         public virtual DbSet<SkinTest> SkinTests { get; set; }
         public virtual DbSet<SkinTestQuestion> SkinTestQuestions { get; set; }
         public virtual DbSet<SkinTestResult> SkinTestResults { get; set; }
+        public virtual DbSet<SkinTestAnswer> SkinTestAnswers { get; set; }
         public virtual DbSet<SkinTherapist> SkinTherapists { get; set; }
         public virtual DbSet<SkinTherapistSchedule> SkinTherapistSchedules { get; set; }
         public virtual DbSet<Staff> Staffs { get; set; }
         public virtual DbSet<TimeSlot> TimeSlots { get; set; }
         public virtual DbSet<Treatment> Treatments { get; set; }
         public virtual DbSet<TreatmentResult> TreatmentResults { get; set; }
-
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
         public virtual DbSet<ExpiredToken> ExpiredTokens { get; set; }
 
@@ -178,6 +163,12 @@ namespace APP.DAL
                .HasForeignKey(a => a.SkinTestId)
                .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<SkinTest>()
+               .HasMany(a => a.SkinTestAnswer)
+               .WithOne(a => a.SkinTest)
+               .HasForeignKey(a => a.SkinTestId)
+               .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<SkinTestResult>()
                .HasOne(a => a.Customer)
                .WithMany(a => a.SkinTestResults)
@@ -192,7 +183,7 @@ namespace APP.DAL
 
             modelBuilder.Entity<Customer>()
                 .HasOne(a => a.Account)
-                .WithOne(a=> a.Customer)
+                .WithOne(a => a.Customer)
                 .HasForeignKey<Customer>(a => a.AccountId)
                 .OnDelete(DeleteBehavior.Cascade);
 

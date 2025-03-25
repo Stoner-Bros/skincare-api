@@ -55,6 +55,10 @@ namespace APP.Entity.Mapper
 
             CreateMap<BookingCreationRequest, Booking>();
             CreateMap<BookingUpdationRequest, Booking>();
+
+            CreateMap<SkinTestAnswer, SkinTestAnswerResponse>()
+                .ForMember(dest => dest.SkinTest, opt => opt.MapFrom(src => src.SkinTest));
+            CreateMap<SkinTestAnswerRequest, SkinTestAnswer>();
         }
     }
 }

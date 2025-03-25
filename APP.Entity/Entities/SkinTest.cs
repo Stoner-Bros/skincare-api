@@ -31,6 +31,7 @@ namespace APP.Entity.Entities
         public virtual ICollection<SkinTestResult> SkinTestResults { get; set; } = new List<SkinTestResult>();
 
         public virtual ICollection<SkinTestQuestion> SkinTestQuestions { get; set; } = new List<SkinTestQuestion>();
+        public virtual ICollection<SkinTestAnswer> SkinTestAnswer { get; set; } = new List<SkinTestAnswer>();
 
     }
 }
