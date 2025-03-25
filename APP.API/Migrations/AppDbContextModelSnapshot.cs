@@ -197,11 +197,11 @@ namespace APP.API.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("checkout_at");
 
-                    b.Property<int>("CustomerId")
+                    b.Property<int?>("CustomerId")
                         .HasColumnType("int")
                         .HasColumnName("customer_id");
 
-                    b.Property<int>("GuestId")
+                    b.Property<int?>("GuestId")
                         .HasColumnType("int")
                         .HasColumnName("guest_id");
 
@@ -209,11 +209,11 @@ namespace APP.API.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("notes");
 
-                    b.Property<int>("SkinTherapistId")
+                    b.Property<int?>("SkinTherapistId")
                         .HasColumnType("int")
                         .HasColumnName("skin_therapist_id");
 
-                    b.Property<int>("StaffId")
+                    b.Property<int?>("StaffId")
                         .HasColumnType("int")
                         .HasColumnName("staff_id");
 
@@ -258,8 +258,8 @@ namespace APP.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("booking_id");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2")
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date")
                         .HasColumnName("date");
 
                     b.Property<string>("Notes")
@@ -1164,26 +1164,22 @@ namespace APP.API.Migrations
                     b.HasOne("APP.Entity.Entities.Customer", "Customer")
                         .WithMany("Bookings")
                         .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("APP.Entity.Entities.Guest", "Guest")
                         .WithMany("Bookings")
                         .HasForeignKey("GuestId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("APP.Entity.Entities.SkinTherapist", "SkinTherapist")
                         .WithMany("Bookings")
                         .HasForeignKey("SkinTherapistId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("APP.Entity.Entities.Staff", "Staff")
                         .WithMany("Bookings")
                         .HasForeignKey("StaffId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("APP.Entity.Entities.Treatment", "Treatment")
                         .WithMany("Bookings")

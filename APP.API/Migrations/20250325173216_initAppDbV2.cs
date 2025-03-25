@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace APP.API.Migrations
 {
     /// <inheritdoc />
-    public partial class initAppDbV1 : Migration
+    public partial class initAppDbV2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -61,6 +61,7 @@ namespace APP.API.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     service_name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     service_description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    service_thumbnail_url = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime2", nullable: false),
                     is_available = table.Column<bool>(type: "bit", nullable: false)
@@ -282,7 +283,8 @@ namespace APP.API.Migrations
                 {
                     account_id = table.Column<int>(type: "int", nullable: false),
                     specialization = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    yoe = table.Column<int>(type: "int", nullable: false),
+                    experience = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    introduction = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     rating = table.Column<double>(type: "float", nullable: false),
                     is_available = table.Column<bool>(type: "bit", nullable: false)
@@ -305,7 +307,7 @@ namespace APP.API.Migrations
                 columns: table => new
                 {
                     account_id = table.Column<int>(type: "int", nullable: false),
-                    start_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    start_date = table.Column<DateOnly>(type: "date", nullable: false),
                     is_available = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -329,6 +331,7 @@ namespace APP.API.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     service_id = table.Column<int>(type: "int", nullable: false),
                     treatment_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    treatment_thumbnail_url = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     duration = table.Column<int>(type: "int", nullable: false),
                     price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -403,6 +406,41 @@ namespace APP.API.Migrations
                         principalSchema: "dbo",
                         principalTable: "blog",
                         principalColumn: "blog_id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "skin_test_answer",
+                schema: "dbo",
+                columns: table => new
+                {
+                    answer_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    skin_test_id = table.Column<int>(type: "int", nullable: false),
+                    customer_id = table.Column<int>(type: "int", nullable: true),
+                    guest_id = table.Column<int>(type: "int", nullable: true),
+                    answers = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_skin_test_answer", x => x.answer_id);
+                    table.ForeignKey(
+                        name: "FK_skin_test_answer_customer_customer_id",
+                        column: x => x.customer_id,
+                        principalSchema: "dbo",
+                        principalTable: "customer",
+                        principalColumn: "account_id");
+                    table.ForeignKey(
+                        name: "FK_skin_test_answer_guest_guest_id",
+                        column: x => x.guest_id,
+                        principalSchema: "dbo",
+                        principalTable: "guest",
+                        principalColumn: "guest_id");
+                    table.ForeignKey(
+                        name: "FK_skin_test_answer_skin_test_skin_test_id",
+                        column: x => x.skin_test_id,
+                        principalSchema: "dbo",
+                        principalTable: "skin_test",
+                        principalColumn: "skin_test_id");
                 });
 
             migrationBuilder.CreateTable(
@@ -513,10 +551,10 @@ namespace APP.API.Migrations
                     booking_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     treatment_id = table.Column<int>(type: "int", nullable: false),
-                    skin_therapist_id = table.Column<int>(type: "int", nullable: false),
-                    staff_id = table.Column<int>(type: "int", nullable: false),
-                    customer_id = table.Column<int>(type: "int", nullable: false),
-                    guest_id = table.Column<int>(type: "int", nullable: false),
+                    skin_therapist_id = table.Column<int>(type: "int", nullable: true),
+                    staff_id = table.Column<int>(type: "int", nullable: true),
+                    customer_id = table.Column<int>(type: "int", nullable: true),
+                    guest_id = table.Column<int>(type: "int", nullable: true),
                     booking_at = table.Column<DateTime>(type: "datetime2", nullable: false),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     checkin_at = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -568,7 +606,7 @@ namespace APP.API.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     booking_id = table.Column<int>(type: "int", nullable: false),
                     time_slot_id = table.Column<int>(type: "int", nullable: false),
-                    date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    date = table.Column<DateOnly>(type: "date", nullable: false),
                     notes = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -823,6 +861,24 @@ namespace APP.API.Migrations
                 column: "account_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_skin_test_answer_customer_id",
+                schema: "dbo",
+                table: "skin_test_answer",
+                column: "customer_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_skin_test_answer_guest_id",
+                schema: "dbo",
+                table: "skin_test_answer",
+                column: "guest_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_skin_test_answer_skin_test_id",
+                schema: "dbo",
+                table: "skin_test_answer",
+                column: "skin_test_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_skin_test_question_skin_test_id",
                 schema: "dbo",
                 table: "skin_test_question",
@@ -907,6 +963,10 @@ namespace APP.API.Migrations
 
             migrationBuilder.DropTable(
                 name: "settings",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "skin_test_answer",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
