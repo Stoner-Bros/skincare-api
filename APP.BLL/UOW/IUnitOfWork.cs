@@ -22,6 +22,8 @@ namespace APP.BLL.UOW
         IBookingTimeSlotRepository BookingTimeSlots { get; }
         ISkinTestAnswerRepository SkinTestAnswers { get; }
         IGuestRepository Guests { get; }
+        ISkinTestResultRepository SkinTestResults { get; }
+
         Task<int> SaveAsync();
         Task<int> SaveWithTransactionAsync();
         Task<int> SaveWithTransactionAsync(Func<Task> operation);
