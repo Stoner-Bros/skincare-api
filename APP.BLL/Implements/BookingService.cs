@@ -19,12 +19,19 @@ namespace APP.BLL.Implements
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<BookingService> _logger;
+        private readonly ISkinTherapistScheduleService _skinTherapistScheduleService;
+        private readonly ISkinTherapistService _skinTherapistService;
 
-        public BookingService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<BookingService> logger)
+        public BookingService
+            (IUnitOfWork unitOfWork, IMapper mapper, ILogger<BookingService> logger
+            , ISkinTherapistScheduleService skinTherapistScheduleService
+            , ISkinTherapistService skinTherapistService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
+            _skinTherapistScheduleService = skinTherapistScheduleService;
+            _skinTherapistService = skinTherapistService;
         }
 
         public async Task<PaginationModel<object>> GetAllAsync(int pageNumber, int pageSize)
@@ -316,6 +323,12 @@ namespace APP.BLL.Implements
                 throw new Exception("Email exist in another role.");
             }
 
+            var therapistPaging = await _skinTherapistService.GetAllFreeInSlotAsync(request.Date, request.TimeSlotIds, 1, 100);
+            if (request.SkinTherapistId != null && !therapistPaging.Items.Any(s => s.AccountId == request.SkinTherapistId))
+            {
+                throw new Exception("Therapist is busy.");
+            }
+
             var result = await _unitOfWork.SaveWithTransactionAsync(async () =>
             {
                 var booking = _mapper.Map<Booking>(request);
@@ -353,13 +366,22 @@ namespace APP.BLL.Implements
                 var createdBooking = await _unitOfWork.Bookings.CreateAsync(booking);
                 await _unitOfWork.SaveAsync();
 
+                if (request.SkinTherapistId != null)
+                {
+                    var skinTherapist = await _unitOfWork.SkinTherapists.GetByIDAsync(request.SkinTherapistId.Value);
+                    if (skinTherapist != null)
+                    {
+                        await _skinTherapistScheduleService.UpdateScheduleAvailabilityAsync(skinTherapist.AccountId, request.Date, request.TimeSlotIds);
+                    }
+                }
+
                 foreach (var timeSlotId in request.TimeSlotIds)
                 {
                     var bookingTimeSlot = new BookingTimeSlot
                     {
                         BookingId = createdBooking.BookingId,
                         TimeSlotId = timeSlotId,
-                        Date = DateOnly.FromDateTime(DateTime.Now),
+                        Date = request.Date,
                     };
                     await _unitOfWork.BookingTimeSlots.CreateAsync(bookingTimeSlot);
                 }

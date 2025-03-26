@@ -10,9 +10,10 @@ namespace APP.BLL.Interfaces
 {
     public interface ISkinTherapistScheduleService
     {
-        Task<PaginationModel<SkinTherapistScheduleResponse>> GetAllAsync(int therapistId, int pageNumber, int pageSize);
+        Task<PaginationModel<SkinTherapistScheduleResponse>> GetAllAsync(DateOnly? date, int therapistId, int pageNumber, int pageSize);
+        Task<bool> UpdateScheduleAvailabilityAsync(int therapistId, DateOnly date, int[] timeSlotIds);
         Task<SkinTherapistScheduleResponse?> GetByIDAsync(int id);
-        Task<SkinTherapistScheduleResponse?> CreateAsync(SkinTherapistScheduleCreationRequest request);
+        Task<IEnumerable<SkinTherapistScheduleResponse>?> CreateAsync(SkinTherapistScheduleCreationRequest request);
         Task<bool> UpdateAsync(int id, SkinTherapistScheduleUpdationRequest request);
         Task<bool> DeleteAsync(int id);
     }

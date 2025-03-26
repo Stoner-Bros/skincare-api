@@ -121,36 +121,47 @@ namespace APP.BLL.Implements
         }
 
         public async Task<PaginationModel<SkinTherapistResponse>> GetAllFreeInSlotAsync
-            (DateOnly? date, int timeSlotId, int pageNumber, int pageSize)
+                (DateOnly? date, int[]? timeSlotIds, int pageNumber, int pageSize)
         {
-            if (timeSlotId <= 0) throw new ArgumentException("Time slot ID must be greater than 0.");
-            var timeSlot = await _unitOfWork.TimeSlots.GetByIDAsync(timeSlotId);
-            if (timeSlot == null) throw new ArgumentException("Time slot not found.");
+            if (timeSlotIds == null || timeSlotIds.Length == 0)
+                throw new ArgumentException("At least one valid TimeSlotId is required.");
 
-            var query = _unitOfWork.SkinTherapists.GetQueryable()
-                                    .Include(s => s.Account)
-                                    .ThenInclude(a => a.AccountInfo)
-                                    .Include(s => s.SkinTherapistSchedules)
-                                    .Where(s => s.SkinTherapistSchedules.Any(s => s.WorkDate == date
-                                                                               && s.StartTime == timeSlot.StartTime
-                                                                               && s.EndTime == timeSlot.EndTime
-                                                                               && s.IsAvailable == true));
+            var timeSlots = _unitOfWork.TimeSlots.GetQueryable()
+                                .Where(s => timeSlotIds.Contains(s.TimeSlotId))
+                                .ToList();
 
-            var totalRecords = await query.CountAsync(); // Tổng số bản ghi
-            var accounts = await query
-                .OrderBy(a => a.AccountId) // Sắp xếp (có thể thay đổi)
-                .Skip((pageNumber - 1) * pageSize) // Bỏ qua các bản ghi trước đó
-                .Take(pageSize) // Lấy số lượng bản ghi cần lấy
-                .ToListAsync();
+            if (timeSlots.Count != timeSlotIds.Length)
+                throw new ArgumentException("One or more time slots not found.");
+
+            var therapists = await _unitOfWork.SkinTherapists.GetQueryable()
+                                .Include(s => s.Account)
+                                .ThenInclude(a => a.AccountInfo)
+                                .Include(s => s.SkinTherapistSchedules)
+                                .Where(s => s.SkinTherapistSchedules.Any(st => st.WorkDate == date && st.IsAvailable))
+                                .ToListAsync();
+
+            var filteredTherapists = therapists.Where(s =>
+                timeSlots.All(ts => s.SkinTherapistSchedules.Any(st => st.WorkDate == date
+                    && st.StartTime == ts.StartTime
+                    && st.EndTime == ts.EndTime
+                    && st.IsAvailable)))
+                .ToList();
+
+            var totalRecords = filteredTherapists.Count;
+            var paginatedTherapists = filteredTherapists
+                .OrderBy(a => a.AccountId)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
             return new PaginationModel<SkinTherapistResponse>
             {
-                Items = _mapper.Map<List<SkinTherapistResponse>>(accounts),
+                Items = _mapper.Map<List<SkinTherapistResponse>>(paginatedTherapists),
                 PageNumber = pageNumber,
                 PageSize = pageSize,
                 TotalRecords = totalRecords
             };
-
         }
+
     }
 }

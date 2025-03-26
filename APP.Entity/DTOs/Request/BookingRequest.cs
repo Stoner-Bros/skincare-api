@@ -28,8 +28,11 @@ namespace APP.Entity.DTOs.Request
         public int TreatmentId { get; set; }
         public int? SkinTherapistId { get; set; }
         public string? Notes { get; set; }
+
         [Required]
-        public List<int> TimeSlotIds { get; set; } = new List<int>();
+        public DateOnly Date { get; set; }
+        [Required]
+        public int[] TimeSlotIds { get; set; } = null!;
     }
 
     public class BookingUpdationRequest

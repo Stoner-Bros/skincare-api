@@ -9,8 +9,8 @@ namespace APP.Entity.DTOs.Request
     public class SkinTherapistScheduleCreationRequest
     {
         public int SkinTherapistId { get; set; }
-        public DateOnly WorkDate { get; set; }
-        public int TimeSlotId { get; set; }
+        public DateOnly[] WorkDates { get; set; } = Array.Empty<DateOnly>();
+        public int[] TimeSlotIds { get; set; } = Array.Empty<int>();
         public string? Notes { get; set; }
     }
 
