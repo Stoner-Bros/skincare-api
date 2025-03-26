@@ -13,7 +13,7 @@ namespace APP.Entity.Entities
         public int ConsultingFormId { get; set; }
 
         [Column("staff_id")]
-        public int StaffId { get; set; }
+        public int? StaffId { get; set; }
 
         [Column("customer_id")]
         public int? CustomerId { get; set; }  // CustomerId có thể là null nếu khách không đăng ký
@@ -31,10 +31,10 @@ namespace APP.Entity.Entities
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         [Column("updated_at")]
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; } = DateTime.Now;
 
         // Navigation properties
-        public virtual Staff Staff { get; set; } = null!;
+        public virtual Staff? Staff { get; set; } = null!;
         public virtual Customer? Customer { get; set; }
         public virtual Guest? Guest { get; set; }
     }
