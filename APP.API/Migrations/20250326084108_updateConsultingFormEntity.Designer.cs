@@ -4,6 +4,7 @@ using APP.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APP.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250326084108_updateConsultingFormEntity")]
+    partial class updateConsultingFormEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -990,8 +993,8 @@ namespace APP.API.Migrations
                         .HasColumnType("time")
                         .HasColumnName("start_time");
 
-                    b.Property<DateOnly>("WorkDate")
-                        .HasColumnType("date")
+                    b.Property<DateTime>("WorkDate")
+                        .HasColumnType("datetime2")
                         .HasColumnName("work_date");
 
                     b.HasKey("ScheduleId");
