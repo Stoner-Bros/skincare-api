@@ -34,6 +34,23 @@ namespace APP.API.Controllers
             return ResponseOk(pagedAccounts);
         }
 
+        [HttpPost("free")]
+        public async Task<ActionResult<PaginationModel<SkinTherapistResponse>>> GetSkinTherapistsFree(
+                [FromQuery] DateOnly? date = null,
+                [FromQuery] int timeSlotId = 1,
+                [FromQuery] int pageNumber = 1,
+                [FromQuery] int pageSize = 10
+            )
+        {
+            date ??= DateOnly.FromDateTime(DateTime.Today);
+            if (pageNumber < 1 || pageSize < 1)
+                return ResponseNoData(400, "PageNumber and PageSize must greater than 0.");
+
+            var pagedAccounts = await _skinTherapistService.GetAllFreeInSlotAsync(date, timeSlotId, pageNumber, pageSize);
+
+            return ResponseOk(pagedAccounts);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<SkinTherapistResponse>> GetSkinTherapist(int id)
         {
