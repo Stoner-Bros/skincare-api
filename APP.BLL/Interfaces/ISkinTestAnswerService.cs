@@ -8,6 +8,7 @@ namespace APP.BLL.Interfaces
     public interface ISkinTestAnswerService
     {
         Task<IEnumerable<SkinTestAnswerResponse>> GetAllAsync();
+        Task<SkinTestAnswerResponse?> GetByIdAsync(int id);
         Task<SkinTestAnswerResponse?> CreateSkinTestAnswerAsync(SkinTestAnswerRequest request);
     }
 }

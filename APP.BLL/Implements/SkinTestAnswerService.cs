@@ -31,34 +31,87 @@ namespace APP.BLL.Implements
                 .Include(a => a.SkinTest)
                 .ThenInclude(st => st.SkinTestQuestions)
                 .Include(a => a.Customer)
+                .ThenInclude(c => c.Account)
+                .ThenInclude(a => a.AccountInfo)
                 .Include(a => a.Guest)
                 .ToListAsync();
 
             return _mapper.Map<IEnumerable<SkinTestAnswerResponse>>(answers);
         }
 
+        public async Task<SkinTestAnswerResponse?> GetByIdAsync(int id)
+        {
+            var answer = await _unitOfWork.SkinTestAnswers.GetQueryable()
+                .Include(a => a.SkinTest)
+                .ThenInclude(st => st.SkinTestQuestions)
+                .Include(a => a.Customer)
+                .ThenInclude(c => c.Account)
+                .ThenInclude(a => a.AccountInfo)
+                .Include(a => a.Guest)
+                .FirstOrDefaultAsync(a => a.AnswerId == id);
+
+            return answer == null ? null : _mapper.Map<SkinTestAnswerResponse>(answer);
+        }
+
         public async Task<SkinTestAnswerResponse?> CreateSkinTestAnswerAsync(SkinTestAnswerRequest request)
         {
-            // Retrieve the SkinTest to get the number of questions
+            // Check if the email belongs to a customer
+            var customerAccount = await _unitOfWork.Accounts.GetByEmailAsync(request.Email);
+            if (customerAccount != null && customerAccount.Role != "Customer")
+            {
+                throw new InvalidOperationException("Email exists in another role.");
+            }
+
+            var skinTestAnswer = _mapper.Map<SkinTestAnswer>(request);
+
+            if (customerAccount == null)
+            {
+                var existingGuest = await _unitOfWork.Guests.GetByEmailAsync(request.Email);
+                if (existingGuest == null)
+                {
+                    var guest = new Guest
+                    {
+                        Email = request.Email,
+                        Phone = request.Phone,
+                        FullName = request.FullName,
+                    };
+                    var createdGuest = await _unitOfWork.Guests.CreateAsync(guest);
+                    await _unitOfWork.SaveAsync();
+                    skinTestAnswer.GuestId = createdGuest.GuestId;
+                }
+                else
+                {
+                    skinTestAnswer.GuestId = existingGuest.GuestId;
+                }
+            }
+            else
+            {
+                skinTestAnswer.CustomerId = customerAccount.AccountId;
+                var customer = await _unitOfWork.Customers.GetQueryable()
+                    .Include(c => c.Account)
+                    .ThenInclude(a => a.AccountInfo)
+                    .FirstOrDefaultAsync(c => c.AccountId == customerAccount.AccountId);
+                if (customer != null)
+                {
+                    skinTestAnswer.Customer = customer;
+                }
+
+            }
+
+
             var skinTest = await _unitOfWork.SkinTests.GetQueryable()
                 .Include(st => st.SkinTestQuestions)
                 .FirstOrDefaultAsync(st => st.SkinTestId == request.SkinTestId);
-
             if (skinTest == null)
             {
-                throw new KeyNotFoundException("SkinTest not found.");
+                throw new InvalidOperationException("SkinTest not found.");
             }
+            skinTestAnswer.SkinTest = skinTest;
 
-            // Validate the number of answers
-            if (request.Answers.Length > skinTest.SkinTestQuestions.Count)
-            {
-                throw new InvalidOperationException("The number of answers cannot be greater than the number of questions.");
-            }
-
-            var answer = _mapper.Map<SkinTestAnswer>(request);
-            var createdAnswer = await _unitOfWork.SkinTestAnswers.CreateAsync(answer);
+            var createdAnswer = await _unitOfWork.SkinTestAnswers.CreateAsync(skinTestAnswer);
             await _unitOfWork.SaveAsync();
             return _mapper.Map<SkinTestAnswerResponse>(createdAnswer);
         }
     }
 }
+
