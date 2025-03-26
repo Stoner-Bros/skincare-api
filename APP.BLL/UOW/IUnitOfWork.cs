@@ -25,6 +25,8 @@ namespace APP.BLL.UOW
         ISkinTestResultRepository SkinTestResults { get; }
         IConsultingFormRepository ConsultingForms { get; }
         ISkinTherapistScheduleRepository SkinTherapistSchedules { get; }
+        IFeedbackRepository Feedbacks { get; }
+        IFeedbackReplyRepository FeedbackReplies { get; }
 
         Task<int> SaveAsync();
         Task<int> SaveWithTransactionAsync();

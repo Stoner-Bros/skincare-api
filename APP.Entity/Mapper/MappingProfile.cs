@@ -76,6 +76,18 @@ namespace APP.Entity.Mapper
             CreateMap<SkinTherapistScheduleCreationRequest, SkinTherapistSchedule>();
             CreateMap<SkinTherapistScheduleUpdationRequest, SkinTherapistSchedule>();
             CreateMap<SkinTherapistSchedule, SkinTherapistScheduleResponse>();
+
+            CreateMap<FeedbackCreationRequest, Feedback>();
+            CreateMap<FeedbackUpdationRequest, Feedback>();
+            CreateMap<Feedback, FeedbackResponse>()
+                .ForMember(dest => dest.FeedbackReplies, opt => opt.MapFrom(src => src.FeedbackReplies));
+
+
+            CreateMap<FeedbackReplyCreationRequest, FeedbackReply>();
+            CreateMap<FeedbackReplyUpdationRequest, FeedbackReply>();
+            CreateMap<FeedbackReply, FeedbackReplyResponse>()
+                .ForMember(dest => dest.StaffName, opt => opt.MapFrom(src => src.Staff.Account.AccountInfo.FullName));
+
         }
     }
 }
