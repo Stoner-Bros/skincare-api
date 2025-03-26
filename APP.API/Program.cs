@@ -56,6 +56,8 @@ namespace APP.API
             builder.Services.AddScoped<ISkinTestResultService, SkinTestResultService>();
             builder.Services.AddScoped<IConsultingFormService, ConsultingFormService>();
             builder.Services.AddScoped<ISkinTherapistScheduleService, SkinTherapistScheduleService>();
+            builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+            builder.Services.AddScoped<IFeedbackReplyService, FeedbackReplyService>();
 
             builder.Services.AddControllers();
 
