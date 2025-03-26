@@ -25,21 +25,24 @@ namespace APP.API.Controllers
             return Ok(answers);
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<SkinTestAnswerResponse>> GetById(int id)
+        {
+            var answer = await _skinTestAnswerService.GetByIdAsync(id);
+            return answer == null ? NotFound() : Ok(answer);
+        }
+
         [HttpPost]
         public async Task<ActionResult<SkinTestAnswerResponse>> CreateSkinTestAnswer(SkinTestAnswerRequest request)
         {
             try
             {
                 var answer = await _skinTestAnswerService.CreateSkinTestAnswerAsync(request);
-                return CreatedAtAction(nameof(GetAll), new { id = answer?.AnswerId }, answer);
+                return CreatedAtAction(nameof(GetById), new { id = answer?.AnswerId }, answer);
             }
             catch (InvalidOperationException ex)
             {
                 return BadRequest(new { message = ex.Message });
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
             }
         }
     }

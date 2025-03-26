@@ -36,7 +36,11 @@ namespace APP.Entity.Mapper
             CreateMap<Comment, CommentResponse>()
                 .ForMember(dest => dest.AuthorName, opt => opt.MapFrom(src => src.Account.AccountInfo.FullName));
 
-            CreateMap<Customer, CustomerResponse>();
+            CreateMap<Customer, CustomerAnswerResponse>()
+                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Account.AccountInfo.Phone))
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Account.AccountInfo.FullName));
+
+            CreateMap<Guest, GuestAnswerResponse>();
 
             CreateMap<StaffCreationRequest, Staff>();
             CreateMap<StaffUpdationRequest, Staff>();
@@ -57,7 +61,9 @@ namespace APP.Entity.Mapper
             CreateMap<BookingUpdationRequest, Booking>();
 
             CreateMap<SkinTestAnswer, SkinTestAnswerResponse>()
-                .ForMember(dest => dest.SkinTest, opt => opt.MapFrom(src => src.SkinTest));
+                .ForMember(dest => dest.SkinTest, opt => opt.MapFrom(src => src.SkinTest))
+                .ForMember(dest => dest.Customer, opt => opt.MapFrom(src => src.Customer))
+                .ForMember(dest => dest.Guest, opt => opt.MapFrom(src => src.Guest));
             CreateMap<SkinTestAnswerRequest, SkinTestAnswer>();
 
             CreateMap<SkinTestResult, SkinTestResultResponse>();
@@ -65,7 +71,7 @@ namespace APP.Entity.Mapper
 
             CreateMap<ConsultingFormCreationRequest, ConsultingForm>();
             CreateMap<ConsultingFormUpdationRequest, ConsultingForm>();
-            
+
             CreateMap<SkinTherapistScheduleCreationRequest, SkinTherapistSchedule>();
             CreateMap<SkinTherapistScheduleUpdationRequest, SkinTherapistSchedule>();
             CreateMap<SkinTherapistSchedule, SkinTherapistScheduleResponse>();
