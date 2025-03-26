@@ -33,6 +33,36 @@ namespace APP.API.Controllers
             return ResponseOk(pagedAccounts);
         }
 
+        [HttpGet("history")]
+        public async Task<ActionResult<PaginationModel<object>>> GetBookingsHistory(
+                [FromQuery] int customerId = 1,
+                [FromQuery] int pageNumber = 1,
+                [FromQuery] int pageSize = 10
+            )
+        {
+            if (pageNumber < 1 || pageSize < 1)
+                return ResponseNoData(400, "PageNumber and PageSize must greater than 0.");
+
+            var pagedAccounts = await _bookingService.GetAllByCustomerIdAsync(customerId, pageNumber, pageSize);
+
+            return ResponseOk(pagedAccounts);
+        }
+
+        [HttpGet("history/email")]
+        public async Task<ActionResult<PaginationModel<object>>> GetBookingsHistoryByEmail(
+                [FromQuery] string email = "user@example.com",
+                [FromQuery] int pageNumber = 1,
+                [FromQuery] int pageSize = 10
+            )
+        {
+            if (pageNumber < 1 || pageSize < 1)
+                return ResponseNoData(400, "PageNumber and PageSize must greater than 0.");
+
+            var pagedAccounts = await _bookingService.GetAllByEmailAsync(email, pageNumber, pageSize);
+
+            return ResponseOk(pagedAccounts);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<object>> GetBooking(int id)
         {

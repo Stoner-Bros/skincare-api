@@ -100,6 +100,154 @@ namespace APP.BLL.Implements
             };
         }
 
+        public async Task<PaginationModel<object>> GetAllByCustomerIdAsync(int customerId, int pageNumber, int pageSize)
+        {
+            var query = _unitOfWork.Bookings.GetQueryable()
+                         .AsNoTracking() // Tăng hiệu suất nếu chỉ đọc dữ liệu
+                         .Where(b => b.CustomerId == customerId)
+                         .Select(b => new
+                         {
+                             b.BookingId,
+                             b.BookingAt,
+                             b.Status,
+                             b.CheckinAt,
+                             b.CheckoutAt,
+                             b.TotalPrice,
+                             b.Notes,
+
+                             Treatment = new
+                             {
+                                 b.Treatment.TreatmentId,
+                                 b.Treatment.TreatmentName,
+                                 BelongToService = new
+                                 {
+                                     b.Treatment.Service.ServiceId,
+                                     b.Treatment.Service.ServiceName,
+                                 }
+                             },
+
+                             SkinTherapist = b.SkinTherapistId != null ? new
+                             {
+                                 b.SkinTherapist.AccountId,
+                                 b.SkinTherapist.Account.AccountInfo.FullName,
+                             } : null,
+
+                             Staff = b.StaffId != null ? new
+                             {
+                                 b.Staff.AccountId,
+                                 b.Staff.Account.AccountInfo.FullName,
+                             } : null,
+
+                             Customer = b.CustomerId != null ? new
+                             {
+                                 b.Customer.AccountId,
+                                 b.Customer.Account.AccountInfo.FullName,
+                             } : null,
+
+                             Guest = b.GuestId != null ? new
+                             {
+                                 b.Guest.GuestId,
+                                 b.Guest.FullName,
+                             } : null,
+
+                             TimeSlots = b.BookingTimeSlots.Select(bts => new
+                             {
+                                 bts.TimeSlot.TimeSlotId,
+                                 bts.TimeSlot.StartTime,
+                                 bts.TimeSlot.EndTime,
+                             }).ToList() // Giữ lại để đảm bảo dữ liệu dạng List trong kết quả
+                         });
+
+            var totalRecords = await query.CountAsync(); // Tổng số bản ghi
+            var bookings = await query
+                .OrderBy(a => a.BookingId) // Sắp xếp (có thể thay đổi)
+                .Skip((pageNumber - 1) * pageSize) // Bỏ qua các bản ghi trước đó
+                .Take(pageSize) // Lấy số lượng bản ghi cần lấy
+                .ToListAsync();
+
+            return new PaginationModel<object>
+            {
+                Items = bookings,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalRecords = totalRecords
+            };
+        }
+
+        public async Task<PaginationModel<object>> GetAllByEmailAsync(string email, int pageNumber, int pageSize)
+        {
+            var query = _unitOfWork.Bookings.GetQueryable()
+                         .AsNoTracking() // Tăng hiệu suất nếu chỉ đọc dữ liệu
+                         .Where(b => b.Guest.Email == email || b.Customer.Account.Email == email)
+                         .Select(b => new
+                         {
+                             b.BookingId,
+                             b.BookingAt,
+                             b.Status,
+                             b.CheckinAt,
+                             b.CheckoutAt,
+                             b.TotalPrice,
+                             b.Notes,
+
+                             Treatment = new
+                             {
+                                 b.Treatment.TreatmentId,
+                                 b.Treatment.TreatmentName,
+                                 BelongToService = new
+                                 {
+                                     b.Treatment.Service.ServiceId,
+                                     b.Treatment.Service.ServiceName,
+                                 }
+                             },
+
+                             SkinTherapist = b.SkinTherapistId != null ? new
+                             {
+                                 b.SkinTherapist.AccountId,
+                                 b.SkinTherapist.Account.AccountInfo.FullName,
+                             } : null,
+
+                             Staff = b.StaffId != null ? new
+                             {
+                                 b.Staff.AccountId,
+                                 b.Staff.Account.AccountInfo.FullName,
+                             } : null,
+
+                             Customer = b.CustomerId != null ? new
+                             {
+                                 b.Customer.AccountId,
+                                 b.Customer.Account.AccountInfo.FullName,
+                             } : null,
+
+                             Guest = b.GuestId != null ? new
+                             {
+                                 b.Guest.GuestId,
+                                 b.Guest.FullName,
+                             } : null,
+
+                             TimeSlots = b.BookingTimeSlots.Select(bts => new
+                             {
+                                 bts.TimeSlot.TimeSlotId,
+                                 bts.TimeSlot.StartTime,
+                                 bts.TimeSlot.EndTime,
+                             }).ToList() // Giữ lại để đảm bảo dữ liệu dạng List trong kết quả
+                         });
+
+            var totalRecords = await query.CountAsync(); // Tổng số bản ghi
+            var bookings = await query
+                .OrderBy(a => a.BookingId) // Sắp xếp (có thể thay đổi)
+                .Skip((pageNumber - 1) * pageSize) // Bỏ qua các bản ghi trước đó
+                .Take(pageSize) // Lấy số lượng bản ghi cần lấy
+                .ToListAsync();
+
+            return new PaginationModel<object>
+            {
+                Items = bookings,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalRecords = totalRecords
+            };
+        }
+
         public async Task<object?> GetByIDAsync(int id)
         {
             var booking = _unitOfWork.Bookings.GetQueryable()
