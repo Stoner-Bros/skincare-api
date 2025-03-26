@@ -62,6 +62,10 @@ namespace APP.Entity.Mapper
 
             CreateMap<SkinTestResult, SkinTestResultResponse>();
             CreateMap<SkinTestResultRequest, SkinTestResult>();
+
+            CreateMap<SkinTherapistScheduleCreationRequest, SkinTherapistSchedule>();
+            CreateMap<SkinTherapistScheduleUpdationRequest, SkinTherapistSchedule>();
+            CreateMap<SkinTherapistSchedule, SkinTherapistScheduleResponse>();
         }
     }
 }

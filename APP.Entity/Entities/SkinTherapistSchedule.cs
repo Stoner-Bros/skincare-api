@@ -20,7 +20,7 @@ namespace APP.Entity.Entities
         public int SkinTherapistId { get; set; }
 
         [Column("work_date")]
-        public DateTime WorkDate { get; set; }
+        public DateOnly WorkDate { get; set; }
 
         [Column("start_time")]
         public TimeSpan StartTime { get; set; }
