@@ -15,7 +15,7 @@ namespace APP.BLL.Interfaces
         Task<PaginationModel<object>> GetAllByCustomerIdAsync(int customerId, int pageNumber, int pageSize);
         Task<PaginationModel<object>> GetAllByEmailAsync(string email, int pageNumber, int pageSize);
         Task<object?> GetByIDAsync(int id);
-        Task<bool> CreateAsync(BookingCreationRequest request);
+        Task<object?> CreateAsync(BookingCreationRequest request);
         Task<bool> UpdateAsync(int id, BookingUpdationRequest request);
         Task<bool> DeleteAsync(int id);
     }

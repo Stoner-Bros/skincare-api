@@ -57,6 +57,8 @@ namespace APP.API
             builder.Services.AddScoped<IConsultingFormService, ConsultingFormService>();
             builder.Services.AddScoped<ISkinTherapistScheduleService, SkinTherapistScheduleService>();
 
+            builder.Services.AddScoped<MomoService>();
+
             builder.Services.AddControllers();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

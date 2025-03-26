@@ -30,6 +30,7 @@ namespace APP.BLL.UOW
         public ISkinTestResultRepository SkinTestResults { get; private set; }
         public IConsultingFormRepository ConsultingForms { get; private set; }
         public ISkinTherapistScheduleRepository SkinTherapistSchedules { get; private set; }
+        public IPaymentRepository Payments { get; private set; }
 
         public UnitOfWork(AppDbContext context)
         {
@@ -55,6 +56,7 @@ namespace APP.BLL.UOW
             SkinTestResults = new SkinTestResultRepository(context);
             ConsultingForms = new ConsultingFormRepository(context);
             SkinTherapistSchedules = new SkinTherapistScheduleRepository(context);
+            Payments = new PaymentRepository(context);
         }
 
         public async Task<int> SaveAsync()

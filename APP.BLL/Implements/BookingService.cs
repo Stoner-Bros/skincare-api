@@ -21,17 +21,19 @@ namespace APP.BLL.Implements
         private readonly ILogger<BookingService> _logger;
         private readonly ISkinTherapistScheduleService _skinTherapistScheduleService;
         private readonly ISkinTherapistService _skinTherapistService;
+        private readonly MomoService _momoService;
 
         public BookingService
             (IUnitOfWork unitOfWork, IMapper mapper, ILogger<BookingService> logger
             , ISkinTherapistScheduleService skinTherapistScheduleService
-            , ISkinTherapistService skinTherapistService)
+            , ISkinTherapistService skinTherapistService, MomoService momoService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
             _skinTherapistScheduleService = skinTherapistScheduleService;
             _skinTherapistService = skinTherapistService;
+            _momoService = momoService;
         }
 
         public async Task<PaginationModel<object>> GetAllAsync(int pageNumber, int pageSize)
@@ -315,7 +317,7 @@ namespace APP.BLL.Implements
             return booking.Any() ? booking.ElementAt(0) : null;
         }
 
-        public async Task<bool> CreateAsync(BookingCreationRequest request)
+        public async Task<object?> CreateAsync(BookingCreationRequest request)
         {
             var customerAccount = await _unitOfWork.Accounts.GetByEmailAsync(request.Email);
             if (customerAccount != null && customerAccount.Role != "Customer")
@@ -328,6 +330,12 @@ namespace APP.BLL.Implements
             {
                 throw new Exception("Therapist is busy.");
             }
+
+            var payment = new Payment
+            {
+                PaymentMethod = request.PaymentMethod,
+            };
+            string orderInfo = "Đặt lịch Seoul Spa - ";
 
             var result = await _unitOfWork.SaveWithTransactionAsync(async () =>
             {
@@ -361,9 +369,17 @@ namespace APP.BLL.Implements
 
                 if (treatment != null && treatment.Price > 0)
                 {
-                    booking.TotalPrice = treatment.Price * request.TimeSlotIds.Count();
+                    booking.TotalPrice = treatment.Price;
+                    //booking.TotalPrice = treatment.Price * request.TimeSlotIds.Count();
                 }
+                orderInfo += treatment.TreatmentName;
                 var createdBooking = await _unitOfWork.Bookings.CreateAsync(booking);
+                await _unitOfWork.SaveAsync();
+
+                payment.BookingId = createdBooking.BookingId;
+                payment.Amount = createdBooking.TotalPrice;
+
+                await _unitOfWork.Payments.CreateAsync(payment);
                 await _unitOfWork.SaveAsync();
 
                 if (request.SkinTherapistId != null)
@@ -388,8 +404,14 @@ namespace APP.BLL.Implements
 
             }) > 0;
 
+            if (result)
+            {
+                var paymentUrl = await _momoService.CreatePaymentUrl
+                    ($"SS{DateTime.Now:yyyyMMddHHmmss}", payment.Amount.ToString("0"), orderInfo, payment.PaymentMethod);
+                return paymentUrl;
+            }
 
-            return result;
+            return null;
         }
 
         public async Task<bool> UpdateAsync(int id, BookingUpdationRequest request)
