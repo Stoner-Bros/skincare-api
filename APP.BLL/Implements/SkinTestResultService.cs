@@ -51,11 +51,39 @@ namespace APP.BLL.Implements
                 throw new InvalidOperationException("A result already exists for this Answer.");
             }
 
+            var skinTestAnswer = await _unitOfWork.SkinTestAnswers.GetQueryable()
+                .Include(a => a.Customer)
+                .ThenInclude(c => c.Account)
+                .Include(a => a.Guest)
+                .FirstOrDefaultAsync(a => a.AnswerId == skinTestAnswerId);
+
+            if (skinTestAnswer == null)
+            {
+                throw new InvalidOperationException("SkinTestAnswer not found.");
+            }
+
+            string email;
+            if (skinTestAnswer.Customer != null)
+            {
+                email = skinTestAnswer.Customer.Account.Email;
+            }
+            else if (skinTestAnswer.Guest != null)
+            {
+                email = skinTestAnswer.Guest.Email;
+            }
+            else
+            {
+                throw new InvalidOperationException("Neither Customer nor Guest found for the SkinTestAnswer.");
+            }
+
             var result = _mapper.Map<SkinTestResult>(request);
             result.SkinTestAnswerId = skinTestAnswerId;
             var createdResult = await _unitOfWork.SkinTestResults.CreateAsync(result);
             await _unitOfWork.SaveAsync();
-            return _mapper.Map<SkinTestResultResponse>(createdResult);
+
+            var response = _mapper.Map<SkinTestResultResponse>(createdResult);
+            response.Email = email;
+            return response;
         }
 
         public async Task<SkinTestResultResponse?> UpdateAsync(int resultId, SkinTestResultRequest request)
