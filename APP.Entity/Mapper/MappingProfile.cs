@@ -38,7 +38,8 @@ namespace APP.Entity.Mapper
 
             CreateMap<Customer, CustomerAnswerResponse>()
                 .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Account.AccountInfo.Phone))
-                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Account.AccountInfo.FullName));
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Account.AccountInfo.FullName))
+                .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.Account.AccountInfo.AccountId));
 
             CreateMap<Guest, GuestAnswerResponse>();
 
