@@ -119,5 +119,38 @@ namespace APP.BLL.Implements
             _unitOfWork.SkinTherapists.Delete(therapist);
             return await _unitOfWork.SaveAsync() > 0;
         }
+
+        public async Task<PaginationModel<SkinTherapistResponse>> GetAllFreeInSlotAsync
+            (DateOnly? date, int timeSlotId, int pageNumber, int pageSize)
+        {
+            if (timeSlotId <= 0) throw new ArgumentException("Time slot ID must be greater than 0.");
+            var timeSlot = await _unitOfWork.TimeSlots.GetByIDAsync(timeSlotId);
+            if (timeSlot == null) throw new ArgumentException("Time slot not found.");
+
+            var query = _unitOfWork.SkinTherapists.GetQueryable()
+                                    .Include(s => s.Account)
+                                    .ThenInclude(a => a.AccountInfo)
+                                    .Include(s => s.SkinTherapistSchedules)
+                                    .Where(s => s.SkinTherapistSchedules.Any(s => s.WorkDate == date
+                                                                               && s.StartTime == timeSlot.StartTime
+                                                                               && s.EndTime == timeSlot.EndTime
+                                                                               && s.IsAvailable == true));
+
+            var totalRecords = await query.CountAsync(); // Tổng số bản ghi
+            var accounts = await query
+                .OrderBy(a => a.AccountId) // Sắp xếp (có thể thay đổi)
+                .Skip((pageNumber - 1) * pageSize) // Bỏ qua các bản ghi trước đó
+                .Take(pageSize) // Lấy số lượng bản ghi cần lấy
+                .ToListAsync();
+
+            return new PaginationModel<SkinTherapistResponse>
+            {
+                Items = _mapper.Map<List<SkinTherapistResponse>>(accounts),
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalRecords = totalRecords
+            };
+
+        }
     }
 }

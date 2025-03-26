@@ -4,6 +4,7 @@ using APP.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APP.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250326055011_updateScheduleEntity")]
+    partial class updateScheduleEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -348,7 +351,7 @@ namespace APP.API.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("message");
 
-                    b.Property<int?>("StaffId")
+                    b.Property<int>("StaffId")
                         .HasColumnType("int")
                         .HasColumnName("staff_id");
 
@@ -357,7 +360,7 @@ namespace APP.API.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("status");
 
-                    b.Property<DateTime?>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
@@ -1252,7 +1255,8 @@ namespace APP.API.Migrations
                     b.HasOne("APP.Entity.Entities.Staff", "Staff")
                         .WithMany("ConsultingForms")
                         .HasForeignKey("StaffId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("Customer");
 
