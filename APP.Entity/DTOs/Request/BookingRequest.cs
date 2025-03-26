@@ -33,6 +33,9 @@ namespace APP.Entity.DTOs.Request
         public DateOnly Date { get; set; }
         [Required]
         public int[] TimeSlotIds { get; set; } = null!;
+
+        [Required]
+        public string PaymentMethod { get; set; } = null!;
     }
 
     public class BookingUpdationRequest

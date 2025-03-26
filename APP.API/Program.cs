@@ -59,6 +59,8 @@ namespace APP.API
             builder.Services.AddScoped<IFeedbackService, FeedbackService>();
             builder.Services.AddScoped<IFeedbackReplyService, FeedbackReplyService>();
 
+            builder.Services.AddScoped<MomoService>();
+
             builder.Services.AddControllers();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

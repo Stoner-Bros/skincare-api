@@ -75,7 +75,7 @@ namespace APP.API.Controllers
         {
             var success = await _bookingService.CreateAsync(request);
 
-            return success ? ResponseOk() : _respBadRequest;
+            return success != null ? ResponseOk(success) : _respBadRequest;
         }
 
         [HttpPut("{id}")]

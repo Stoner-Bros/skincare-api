@@ -25,6 +25,7 @@ namespace APP.BLL.UOW
         ISkinTestResultRepository SkinTestResults { get; }
         IConsultingFormRepository ConsultingForms { get; }
         ISkinTherapistScheduleRepository SkinTherapistSchedules { get; }
+        IPaymentRepository Payments { get; }
         IFeedbackRepository Feedbacks { get; }
         IFeedbackReplyRepository FeedbackReplies { get; }
 
