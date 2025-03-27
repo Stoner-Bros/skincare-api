@@ -80,7 +80,16 @@ namespace APP.BLL.Implements
                         cr.StaffId,
                         cr.Staff.Account.AccountInfo.FullName,
                         cr.Staff.Account.AccountInfo.Avatar
-                    }
+                    },
+
+                    Messages = cr.Messages.Select(m => new
+                    {
+                        m.MessageId,
+                        m.Content,
+                        m.Timestamp,
+                        m.SenderId,
+                        m.SenderRole
+                    })
                 });
 
             return await query.FirstOrDefaultAsync(s => s.ThreadId == threadId);
