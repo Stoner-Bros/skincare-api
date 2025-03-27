@@ -28,6 +28,18 @@ namespace APP.API
                 options.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "app");
             }));
 
+            // Add CORS policy
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontend", policy =>
+                {
+                    policy.WithOrigins("http://localhost:3000", "https://seoulspa.vercel.app") // Replace with your frontend URLs
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
+                });
+            });
+
             //Add custom JWT Authentication
             builder.AddAppAuthetication();
             builder.Services.AddAuthorization();
@@ -86,6 +98,8 @@ namespace APP.API
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors("AllowFrontend"); // Apply the CORS policy
 
             app.UseAuthentication();
             // Custom middleware check token revoked
