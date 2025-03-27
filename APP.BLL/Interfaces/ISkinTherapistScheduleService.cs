@@ -12,6 +12,7 @@ namespace APP.BLL.Interfaces
     {
         Task<PaginationModel<SkinTherapistScheduleResponse>> GetAllAsync(DateOnly? date, int therapistId, int pageNumber, int pageSize);
         Task<bool> UpdateScheduleAvailabilityAsync(int therapistId, DateOnly date, int[] timeSlotIds);
+        Task<bool> ReverseScheduleAsync(int therapistId, DateOnly date, int[] timeSlotIds);
         Task<SkinTherapistScheduleResponse?> GetByIDAsync(int id);
         Task<IEnumerable<SkinTherapistScheduleResponse>?> CreateAsync(SkinTherapistScheduleCreationRequest request);
         Task<bool> UpdateAsync(int id, SkinTherapistScheduleUpdationRequest request);

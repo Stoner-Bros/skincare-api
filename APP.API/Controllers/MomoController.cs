@@ -25,7 +25,8 @@ namespace APP.API.Controllers
         [HttpGet("callback")]
         public IActionResult PaymentCallback([FromQuery] IQueryCollection query)
         {
-            return Ok(query);
+            var paymentResult = _momoService.PaymentExecuteAsync(query);
+            return Ok(paymentResult);
         }
     }
 
