@@ -16,13 +16,15 @@ namespace APP.BLL.Implements
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<AuthService> _logger;
+        private readonly IEmailService _emailService;
 
-        public AuthService(IUnitOfWork unitOfWork, JwtUtil jwtUtil, IMapper mapper, ILogger<AuthService> logger)
+        public AuthService(IUnitOfWork unitOfWork, JwtUtil jwtUtil, IMapper mapper, ILogger<AuthService> logger, IEmailService emailService)
         {
             _unitOfWork = unitOfWork;
             _jwtUtil = jwtUtil;
             _mapper = mapper;
             _logger = logger;
+            _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
         }
 
         public async Task<AuthResponse?> Login(LoginRequest login)
@@ -201,6 +203,13 @@ namespace APP.BLL.Implements
                     AccountId = accountResponse.AccountId
                 });
                 await _unitOfWork.SaveAsync();
+
+                var placeholders = new Dictionary<string, string>
+                {
+                    { "Subject", "Welcome to our website" },
+                    { "UserName", accountResponse.AccountInfo.FullName }
+                };
+                await _emailService.SendEmail(accountResponse.Email, "WelcomeEmail", placeholders);
             }
             catch (Exception ex)
             {

@@ -64,6 +64,9 @@ namespace APP.API
             // Đăng ký Background Service
             builder.Services.AddHostedService<BookingStatusUpdater>();
 
+            builder.Services.AddTransient<IEmailService, EmailService>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
+
             builder.Services.AddControllers();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
