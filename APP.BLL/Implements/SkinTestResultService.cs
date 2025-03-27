@@ -40,6 +40,12 @@ namespace APP.BLL.Implements
             return result == null ? null : _mapper.Map<SkinTestResultResponse>(result);
         }
 
+        public async Task<SkinTestResultResponse?> GetByAnswerIdAsync(int answerId)
+        {
+            var result = await _unitOfWork.SkinTestResults.GetQueryable().FirstOrDefaultAsync(s => s.SkinTestAnswerId == answerId);
+            return result == null ? null : _mapper.Map<SkinTestResultResponse>(result);
+        }
+
         public async Task<SkinTestResultResponse?> CreateBySkinTestAnswerIdAsync(int skinTestAnswerId, SkinTestResultRequest request)
         {
             // Check if a SkinTestResult already exists for the given SkinTestAnswerId

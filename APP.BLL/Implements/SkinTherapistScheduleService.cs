@@ -182,5 +182,52 @@ namespace APP.BLL.Implements
             _unitOfWork.SkinTherapistSchedules.Delete(schedule);
             return await _unitOfWork.SaveAsync() > 0;
         }
+
+        public async Task<bool> Disable(SkinTherapistScheduleCreationRequest request)
+        {
+            var timeSlots = await _unitOfWork.TimeSlots.GetQueryable()
+                                                 .Where(s => request.TimeSlotIds.Contains(s.TimeSlotId))
+                                                 .ToListAsync();
+
+            if (timeSlots.Count != request.TimeSlotIds.Length)
+            {
+                _logger.LogError("One or more time slots do not exist");
+                return false;
+            }
+
+            try
+            {
+                foreach (var date in request.WorkDates)
+                {
+                    foreach (var timeSlot in timeSlots)
+                    {
+                        await DisableSchedule(request.SkinTherapistId, date, timeSlot.StartTime, timeSlot.EndTime);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating schedules");
+                return false;
+            }
+            return true;
+        }
+
+        private async Task<bool> DisableSchedule(int therapistId, DateOnly date, TimeSpan startTime, TimeSpan endTime)
+        {
+            var schedule = await _unitOfWork.SkinTherapistSchedules.GetQueryable()
+                .Where(s => s.SkinTherapistId == therapistId
+                         && s.WorkDate == date
+                         && s.StartTime == startTime
+                         && s.EndTime == endTime
+                         && s.IsAvailable == true)
+                .FirstOrDefaultAsync();
+            if (schedule == null)
+                return false;
+
+            _unitOfWork.SkinTherapistSchedules.Delete(schedule);
+            await _unitOfWork.SaveAsync();
+            return true;
+        }
     }
 }

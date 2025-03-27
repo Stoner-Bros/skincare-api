@@ -76,11 +76,6 @@ namespace APP.BLL.Implements
             string orderId = orderIdProperty.GetString();
             int resultCode = resultCodeProperty.GetInt32();
 
-            if (resultCode != 0) // 0 = Giao dịch thành công
-            {
-                return new { Success = false, Message = "Giao dịch thất bại", Code = resultCode };
-            }
-
             if (!orderId.Contains("SS"))
             {
                 return new { Success = false, Message = "orderId không hợp lệ." };
@@ -95,11 +90,27 @@ namespace APP.BLL.Implements
 
             var booking = await _unitOfWork.Bookings.GetQueryable()
                 .Include(b => b.Payment)
+                .Include(b => b.SkinTherapist)
+                .Include(b => b.BookingTimeSlots)
                 .FirstOrDefaultAsync(b => b.BookingId == bookingId);
 
             if (booking == null)
             {
                 return new { Success = false, Message = "Không tìm thấy Booking." };
+            }
+
+            if (resultCode != 0) // 0 = Giao dịch thành công
+            {
+                if (booking.SkinTherapistId != null && booking.SkinTherapist != null && booking.BookingTimeSlots.Count != 0)
+                {
+                    await _skinTherapistScheduleService.ReverseScheduleAsync(
+                        booking.SkinTherapist.AccountId,
+                        booking.BookingTimeSlots.First().Date,
+                        [.. booking.BookingTimeSlots.Select(b => b.TimeSlotId)]
+                    );
+                }
+                return new { Success = false, Message = "Giao dịch thất bại", Code = resultCode };
+
             }
 
             booking.Status = "Paid";

@@ -17,5 +17,6 @@ namespace APP.BLL.Interfaces
         Task<IEnumerable<SkinTherapistScheduleResponse>?> CreateAsync(SkinTherapistScheduleCreationRequest request);
         Task<bool> UpdateAsync(int id, SkinTherapistScheduleUpdationRequest request);
         Task<bool> DeleteAsync(int id);
+        Task<bool> Disable(SkinTherapistScheduleCreationRequest request);
     }
 }
