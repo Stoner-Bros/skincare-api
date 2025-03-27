@@ -41,15 +41,15 @@ namespace APP.API.Controllers
             return ResponseOk(chatRoom);
         }
 
-        [HttpPost("threads")]
-        public async Task<IActionResult> CreateChatRoom([FromBody] int customerId)
+        [HttpGet("threads/customer")]
+        public async Task<IActionResult> CreateChatRoom([FromQuery] int customerId)
         {
             var chatRoom = await _chatService.CreateChatRoomAsync(customerId);
             return ResponseOk(chatRoom);
         }
 
         [HttpPost("threads/{threadId}/join")]
-        public async Task<IActionResult> JoinChatRoom(int threadId, [FromBody] int staffId)
+        public async Task<IActionResult> JoinChatRoom(int threadId, [FromQuery] int staffId)
         {
             var chatRoom = await _chatService.JoinChatRoomAsync(threadId, staffId);
             if (chatRoom == null)

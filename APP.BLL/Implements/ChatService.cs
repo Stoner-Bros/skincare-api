@@ -88,6 +88,13 @@ namespace APP.BLL.Implements
 
         public async Task<object> CreateChatRoomAsync(int customerId)
         {
+            var thread = await _unitOfWork.Threads.GetQueryable()
+                .FirstOrDefaultAsync(cr => cr.CustomerId == customerId);
+
+            if (thread != null)
+            {
+                return thread;
+            }
             var chatRoom = new Entity.Entities.Thread
             {
                 CustomerId = customerId
