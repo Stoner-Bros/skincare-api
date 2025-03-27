@@ -33,6 +33,8 @@ namespace APP.BLL.UOW
         public IPaymentRepository Payments { get; private set; }
         public IFeedbackRepository Feedbacks { get; private set; }
         public IFeedbackReplyRepository FeedbackReplies { get; private set; }
+        public IThreadRepository Threads { get; private set; }
+        public IMessageRepository Messages { get; private set; }
 
         public UnitOfWork(AppDbContext context)
         {
@@ -61,6 +63,8 @@ namespace APP.BLL.UOW
             Payments = new PaymentRepository(context);
             Feedbacks = new FeedbackRepository(context);
             FeedbackReplies = new FeedbackReplyRepository(context);
+            Threads = new ThreadRepository(context);
+            Messages = new MessageRepository(context);
         }
 
         public async Task<int> SaveAsync()

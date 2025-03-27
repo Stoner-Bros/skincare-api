@@ -28,6 +28,8 @@ namespace APP.BLL.UOW
         IPaymentRepository Payments { get; }
         IFeedbackRepository Feedbacks { get; }
         IFeedbackReplyRepository FeedbackReplies { get; }
+        IThreadRepository Threads { get; }
+        IMessageRepository Messages { get; }
 
         Task<int> SaveAsync();
         Task<int> SaveWithTransactionAsync();
