@@ -6,6 +6,7 @@ using APP.BLL.Implements;
 using APP.BLL.Interfaces;
 using APP.BLL.UOW;
 using APP.DAL;
+using APP.Entity.Entities;
 using APP.Entity.Mapper;
 using APP.Utility;
 using Microsoft.EntityFrameworkCore;
@@ -73,6 +74,7 @@ namespace APP.API
             builder.Services.AddScoped<IFeedbackService, FeedbackService>();
             builder.Services.AddScoped<IFeedbackReplyService, FeedbackReplyService>();
             builder.Services.AddScoped<IChatService, ChatService>();
+            builder.Services.AddScoped<IOverviewService, OverviewService>();
 
             builder.Services.AddScoped<MomoService>();
             // Đăng ký Background Service
