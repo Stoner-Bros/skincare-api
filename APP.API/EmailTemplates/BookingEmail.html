@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #C21E56;
+        }
+
+        p {
+            margin: 10px 0;
+        }
+
+        .details {
+            background-color: #fff;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+            .details table {
+                width: 50%;
+                border-collapse: collapse;
+            }
+
+            .details th, .details td {
+                padding: 10px;
+                border: 1px solid #ddd;
+            }
+
+            .details th {
+                background-color: #C21E56;
+                color: #fff;
+            }
+
+        .footer {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Booking Confirmation</h1>
+    <p>Dear {{UserName}},</p>
+    <p>Thank you for choosing our service. Here are your booking details:</p>
+    <div class="details">
+        <table>
+            <tr>
+                <th>Booking Date</th>
+                <td>{{BookingDate}}</td>
+            </tr>
+            <tr>
+                <th>Time</th>
+                <td>{{Time}}</td>
+            </tr>
+            <tr>
+                <th>Treatment Name</th>
+                <td>{{TreatmentName}}</td>
+            </tr>
+            <tr>
+                <th>Service Name</th>
+                <td>{{ServiceName}}</td>
+            </tr>
+            <tr>
+                <th>Skin Therapist</th>
+                <td>{{SkinTherapist}}</td>
+            </tr>
+            <tr>
+                <th>Total Price</th>
+                <td>{{TotalPrice}} VND</td>
+            </tr>
+            <tr>
+                <th>Notes</th>
+                <td>{{Notes}}</td>
+            </tr>
+        </table>
+    </div>
+    <p class="footer">Best regards,<br>Lux Spa</p>
+</body>
+</html>
+

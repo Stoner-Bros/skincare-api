@@ -22,11 +22,13 @@ namespace APP.BLL.Implements
         private readonly ISkinTherapistScheduleService _skinTherapistScheduleService;
         private readonly ISkinTherapistService _skinTherapistService;
         private readonly MomoService _momoService;
+        private readonly IEmailService _emailService;
 
         public BookingService
             (IUnitOfWork unitOfWork, IMapper mapper, ILogger<BookingService> logger
             , ISkinTherapistScheduleService skinTherapistScheduleService
-            , ISkinTherapistService skinTherapistService, MomoService momoService)
+            , ISkinTherapistService skinTherapistService, MomoService momoService
+            , IEmailService emailService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -34,6 +36,7 @@ namespace APP.BLL.Implements
             _skinTherapistScheduleService = skinTherapistScheduleService;
             _skinTherapistService = skinTherapistService;
             _momoService = momoService;
+            _emailService = emailService ?? throw new ArgumentException(nameof(emailService));
         }
 
         public async Task<PaginationModel<object>> GetAllAsync(int pageNumber, int pageSize)
@@ -373,7 +376,9 @@ namespace APP.BLL.Implements
                     booking.CustomerId = customerAccount.AccountId;
                 }
 
-                var treatment = await _unitOfWork.Treatments.GetByIDAsync(request.TreatmentId);
+                var treatment = await _unitOfWork.Treatments.GetQueryable()
+                    .Include(t => t.Service)
+                    .FirstOrDefaultAsync(t => t.TreatmentId == request.TreatmentId);
 
                 if (treatment != null && treatment.Price > 0)
                 {
@@ -410,6 +415,26 @@ namespace APP.BLL.Implements
                     await _unitOfWork.BookingTimeSlots.CreateAsync(bookingTimeSlot);
                 }
 
+                var timeSlotDetails = string.Join(", ", request.TimeSlotIds.Select(async timeSlotId =>
+                {
+                    var timeSlot = await _unitOfWork.TimeSlots.GetByIDAsync(timeSlotId);
+                    return $"{timeSlot.StartTime} - {timeSlot.EndTime}";
+                }).Select(t => t.Result));
+
+                var placeholders = new Dictionary<string, string>
+                {
+                    { "Subject", "Booking Confirmation" },
+                    { "UserName", request.FullName },
+                    { "BookingDate", request.Date.ToString("dd-MM-yyyy") },
+                    { "Time", timeSlotDetails },
+                    { "TreatmentName", treatment.TreatmentName },
+                    { "ServiceName", treatment.Service?.ServiceName ?? "N/A" },
+                    { "SkinTherapist", request.SkinTherapistId.HasValue ? (await _unitOfWork.SkinTherapists.GetByIDAsync(request.SkinTherapistId.Value)).Account.AccountInfo.FullName : "N/A" },
+                    { "TotalPrice", booking.TotalPrice.ToString("0") },
+                    { "Notes", request.Notes ?? "N/A" }
+};
+
+                await _emailService.SendEmail(request.Email, "BookingEmail", placeholders);
             }) > 0;
 
             if (result)

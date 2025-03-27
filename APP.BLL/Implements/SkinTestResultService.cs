@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using System.Text.Json;
 namespace APP.BLL.Implements
 {
     public class SkinTestResultService : ISkinTestResultService
@@ -17,12 +17,14 @@ namespace APP.BLL.Implements
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<SkinTestResultService> _logger;
+        private readonly IEmailService _emailService;
 
-        public SkinTestResultService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<SkinTestResultService> logger)
+        public SkinTestResultService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<SkinTestResultService> logger, IEmailService emailService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
+            _emailService = emailService;
         }
 
         public async Task<IEnumerable<SkinTestResultResponse>> GetAllAsync()
@@ -97,13 +99,16 @@ namespace APP.BLL.Implements
             }
 
             string email;
+            string userName;
             if (skinTestAnswer.Customer != null)
             {
                 email = skinTestAnswer.Customer.Account.Email;
+                userName = skinTestAnswer.Customer.Account.AccountInfo.FullName;
             }
             else if (skinTestAnswer.Guest != null)
             {
                 email = skinTestAnswer.Guest.Email;
+                userName = skinTestAnswer.Guest.FullName;
             }
             else
             {
@@ -117,6 +122,20 @@ namespace APP.BLL.Implements
 
             var response = _mapper.Map<SkinTestResultResponse>(createdResult);
             response.Email = email;
+
+            var resultData = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(result.Result);
+
+            var placeholders = new Dictionary<string, string>
+            {
+                { "Subject", "Your Skin Test Result" },
+                { "UserName", userName },
+                { "TreatmentName", resultData["treatmentName"].GetString() },
+                { "Description", resultData["description"].GetString() },
+                { "Duration", resultData["duration"].GetInt32().ToString() },
+                { "Price", resultData["price"].GetInt32().ToString() },
+                { "Message", resultData["message"].GetString() }
+            };
+            await _emailService.SendEmail(email, "SkinTestResultEmail", placeholders);
             return response;
         }
 
