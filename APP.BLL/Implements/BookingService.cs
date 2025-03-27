@@ -335,7 +335,7 @@ namespace APP.BLL.Implements
             {
                 PaymentMethod = request.PaymentMethod,
             };
-            string orderInfo = "Đặt lịch Seoul Spa - ";
+            string orderInfo = "Seoul Spa - ";
 
             var result = await _unitOfWork.SaveWithTransactionAsync(async () =>
             {
@@ -407,7 +407,7 @@ namespace APP.BLL.Implements
             if (result)
             {
                 var paymentUrl = await _momoService.CreatePaymentUrl
-                    ($"SS{DateTime.Now:yyyyMMddHHmmss}", payment.Amount.ToString("0"), orderInfo, payment.PaymentMethod);
+                    ($"{payment.BookingId}SS{DateTime.Now:yyyyMMddHHmmss}", payment.Amount.ToString("0"), orderInfo, payment.PaymentMethod);
                 return paymentUrl;
             }
 

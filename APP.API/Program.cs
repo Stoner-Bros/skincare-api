@@ -1,5 +1,6 @@
-using APP.API.Extensions;
+﻿using APP.API.Extensions;
 using APP.API.Middlewares;
+using APP.BLL.BackgroundTask;
 using APP.BLL.Implements;
 using APP.BLL.Interfaces;
 using APP.BLL.UOW;
@@ -60,6 +61,8 @@ namespace APP.API
             builder.Services.AddScoped<IFeedbackReplyService, FeedbackReplyService>();
 
             builder.Services.AddScoped<MomoService>();
+            // Đăng ký Background Service
+            builder.Services.AddHostedService<BookingStatusUpdater>();
 
             builder.Services.AddControllers();
 

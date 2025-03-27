@@ -125,6 +125,34 @@ namespace APP.BLL.Implements
             return true;
         }
 
+        public async Task<bool> ReverseScheduleAsync(int therapistId, DateOnly date, int[] timeSlotIds)
+        {
+            if (timeSlotIds == null || timeSlotIds.Length == 0)
+                throw new ArgumentException("At least one valid TimeSlotId is required.");
+
+            var timeSlots = _unitOfWork.TimeSlots.GetQueryable()
+                                    .Where(s => timeSlotIds.Contains(s.TimeSlotId));
+            if (timeSlots.Count() != timeSlotIds.Length)
+                throw new ArgumentException("One or more time slots not found.");
+
+            var schedules = await _unitOfWork.SkinTherapistSchedules.GetQueryable()
+                .Where(s => s.SkinTherapistId == therapistId
+                         && s.WorkDate == date
+                         && timeSlots.Any(ts => ts.StartTime == s.StartTime && ts.EndTime == s.EndTime))
+                .ToListAsync();
+
+            if (schedules.Count == 0)
+                return false;
+
+            foreach (var schedule in schedules)
+            {
+                schedule.IsAvailable = true;
+            }
+
+            await _unitOfWork.SaveAsync();
+            return true;
+        }
+
         public async Task<bool> UpdateAsync(int id, SkinTherapistScheduleUpdationRequest request)
         {
             var schedule = await _unitOfWork.SkinTherapistSchedules.GetByIDAsync(id);
