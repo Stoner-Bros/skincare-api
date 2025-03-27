@@ -56,10 +56,11 @@ namespace APP.BLL.Implements
 
         public async Task<IEnumerable<SkinTherapistScheduleResponse>?> CreateAsync(SkinTherapistScheduleCreationRequest request)
         {
-            var timeSlots = _unitOfWork.TimeSlots.GetQueryable()
-                                                 .Where(s => request.TimeSlotIds.Contains(s.TimeSlotId));
+            var timeSlots = await _unitOfWork.TimeSlots.GetQueryable()
+                                                 .Where(s => request.TimeSlotIds.Contains(s.TimeSlotId))
+                                                 .ToListAsync();
 
-            if (timeSlots.Count() != request.TimeSlotIds.Length)
+            if (timeSlots.Count != request.TimeSlotIds.Length)
             {
                 _logger.LogError("One or more time slots do not exist");
                 return null;
@@ -71,15 +72,25 @@ namespace APP.BLL.Implements
             {
                 foreach (var timeSlot in timeSlots)
                 {
-                    var schedule = new SkinTherapistSchedule
+                    var existingSchedule = await _unitOfWork.SkinTherapistSchedules.GetQueryable()
+                        .Where(s => s.SkinTherapistId == request.SkinTherapistId
+                                 && s.WorkDate == date
+                                 && s.StartTime == timeSlot.StartTime
+                                 && s.EndTime == timeSlot.EndTime)
+                        .FirstOrDefaultAsync();
+
+                    if (existingSchedule == null)
                     {
-                        SkinTherapistId = request.SkinTherapistId,
-                        WorkDate = date,
-                        StartTime = timeSlot.StartTime,
-                        EndTime = timeSlot.EndTime,
-                        Notes = request.Notes
-                    };
-                    schedules.Add(schedule);
+                        var schedule = new SkinTherapistSchedule
+                        {
+                            SkinTherapistId = request.SkinTherapistId,
+                            WorkDate = date,
+                            StartTime = timeSlot.StartTime,
+                            EndTime = timeSlot.EndTime,
+                            Notes = request.Notes
+                        };
+                        schedules.Add(schedule);
+                    }
                 }
             }
 

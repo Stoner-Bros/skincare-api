@@ -1,4 +1,5 @@
 ﻿using APP.BLL.Implements;
+using APP.BLL.Interfaces;
 using APP.DAL;
 using APP.Entity.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -33,7 +34,7 @@ namespace APP.BLL.BackgroundTask
                     using (var scope = _scopeFactory.CreateScope())
                     {
                         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                        var scheduleService = scope.ServiceProvider.GetRequiredService<SkinTherapistScheduleService>();
+                        var scheduleService = scope.ServiceProvider.GetRequiredService<ISkinTherapistScheduleService>();
 
                         var fifteenMinutesAgo = DateTime.Now.AddMinutes(-100);
 
@@ -53,7 +54,10 @@ namespace APP.BLL.BackgroundTask
                                             .Include(b => b.BookingTimeSlots)
                                             .FirstOrDefaultAsync(b => b.BookingId == booking.BookingId);
 
-                                bookingDetail.Payment.PaymentStatus = "Cancelled";
+                                if (bookingDetail.Payment != null)
+                                {
+                                    bookingDetail.Payment.PaymentStatus = "Cancelled";
+                                }
 
                                 if (booking.SkinTherapistId != null && booking.SkinTherapist != null && booking.BookingTimeSlots.Count != 0)
                                 {
