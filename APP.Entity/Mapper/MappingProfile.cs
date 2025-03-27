@@ -69,7 +69,9 @@ namespace APP.Entity.Mapper
                 .ForMember(dest => dest.Guest, opt => opt.MapFrom(src => src.Guest));
             CreateMap<SkinTestAnswerRequest, SkinTestAnswer>();
 
-            CreateMap<SkinTestResult, SkinTestResultResponse>();
+            CreateMap<SkinTestResult, SkinTestResultResponse>()
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.SkinTestAnswer.Customer != null ? src.SkinTestAnswer.Customer.Account.Email : src.SkinTestAnswer.Guest.Email));
+
             CreateMap<SkinTestResultRequest, SkinTestResult>();
 
             CreateMap<ConsultingFormCreationRequest, ConsultingForm>();

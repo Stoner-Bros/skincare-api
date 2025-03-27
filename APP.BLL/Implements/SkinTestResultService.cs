@@ -29,21 +29,49 @@ namespace APP.BLL.Implements
         {
             var results = await _unitOfWork.SkinTestResults.GetQueryable()
                 .Include(r => r.SkinTestAnswer)
+                .ThenInclude(a => a.Customer)
+                .ThenInclude(c => c.Account)
+                .Include(r => r.SkinTestAnswer.Guest)
                 .ToListAsync();
 
-            return _mapper.Map<IEnumerable<SkinTestResultResponse>>(results);
+            return results.Select(result =>
+            {
+                var response = _mapper.Map<SkinTestResultResponse>(result);
+                response.Email = result.SkinTestAnswer.Customer != null ? result.SkinTestAnswer.Customer.Account.Email : result.SkinTestAnswer.Guest.Email;
+                return response;
+            }).ToList();
         }
 
         public async Task<SkinTestResultResponse?> GetByResultIdAsync(int resultId)
         {
-            var result = await _unitOfWork.SkinTestResults.GetByIDAsync(resultId);
-            return result == null ? null : _mapper.Map<SkinTestResultResponse>(result);
+            var result = await _unitOfWork.SkinTestResults.GetQueryable()
+                .Include(r => r.SkinTestAnswer)
+                .ThenInclude(a => a.Customer)
+                .ThenInclude(c => c.Account)
+                .Include(r => r.SkinTestAnswer.Guest)
+                .FirstOrDefaultAsync(r => r.ResultId == resultId);
+
+            if (result == null) return null;
+
+            var response = _mapper.Map<SkinTestResultResponse>(result);
+            response.Email = result.SkinTestAnswer.Customer != null ? result.SkinTestAnswer.Customer.Account.Email : result.SkinTestAnswer.Guest.Email;
+            return response;
         }
 
         public async Task<SkinTestResultResponse?> GetByAnswerIdAsync(int answerId)
         {
-            var result = await _unitOfWork.SkinTestResults.GetQueryable().FirstOrDefaultAsync(s => s.SkinTestAnswerId == answerId);
-            return result == null ? null : _mapper.Map<SkinTestResultResponse>(result);
+            var result = await _unitOfWork.SkinTestResults.GetQueryable()
+                .Include(r => r.SkinTestAnswer)
+                .ThenInclude(a => a.Customer)
+                .ThenInclude(c => c.Account)
+                .Include(r => r.SkinTestAnswer.Guest)
+                .FirstOrDefaultAsync(s => s.SkinTestAnswerId == answerId);
+
+            if (result == null) return null;
+
+            var response = _mapper.Map<SkinTestResultResponse>(result);
+            response.Email = result.SkinTestAnswer.Customer != null ? result.SkinTestAnswer.Customer.Account.Email : result.SkinTestAnswer.Guest.Email;
+            return response;
         }
 
         public async Task<SkinTestResultResponse?> CreateBySkinTestAnswerIdAsync(int skinTestAnswerId, SkinTestResultRequest request)
