@@ -2,6 +2,7 @@
 using APP.BLL.Implements;
 using APP.Entity.DTOs.Request;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace APP.API.Controllers
 {
@@ -22,10 +23,16 @@ namespace APP.API.Controllers
             return Ok(paymentUrl);
         }
 
-        [HttpGet("callback")]
-        public IActionResult PaymentCallback([FromQuery] IQueryCollection query)
+        [HttpPost("callback")]
+        public IActionResult PaymentCallback([FromBody] JsonElement body)
         {
-            return Ok(query);
+            if (body.ValueKind == JsonValueKind.Undefined)
+            {
+                return BadRequest(new { Success = false, Message = "Dữ liệu callback không hợp lệ." });
+            }
+
+            var paymentResult = _momoService.PaymentExecuteAsync(body);
+            return Ok(paymentResult);
         }
     }
 

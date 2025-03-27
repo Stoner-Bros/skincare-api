@@ -55,6 +55,12 @@ namespace APP.API.Controllers
             return schedule != null ? ResponseOk(schedule) : _respBadRequest;
         }
 
+        [HttpPost("cancel-schedule")]
+        public async Task<IActionResult> CancelSchedule(SkinTherapistScheduleCreationRequest request)
+        {
+            return await _scheduleService.Disable(request) ? ResponseOk() : _respBadRequest;
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSchedule(int id, SkinTherapistScheduleUpdationRequest request)
         {

@@ -43,32 +43,55 @@ namespace APP.BLL.Implements
 
         public async Task<bool> InitAgainAsync(TimeSlotInitRequest request)
         {
-            var allSlots = await _unitOfWork.TimeSlots.GetAllAsync();
-            foreach (var slot in allSlots)
-            {
-                slot.IsAvailable = false;
-                _unitOfWork.TimeSlots.Update(slot);
-            }
+            // Lấy tất cả slot hiện có
+            var existingSlots = await _unitOfWork.TimeSlots.GetAllAsync();
 
             var currentTime = TimeSpan.FromHours(request.StartTime);
             var endTime = TimeSpan.FromHours(request.EndTime);
             var gapTime = TimeSpan.FromMinutes(request.GapTime);
 
+            // Tạo danh sách slot mới dựa trên request
+            var newSlots = new List<TimeSlot>();
             while (currentTime + gapTime <= endTime)
             {
-                var newSlot = new TimeSlot
+                newSlots.Add(new TimeSlot
                 {
                     StartTime = currentTime,
                     EndTime = currentTime + gapTime,
                     IsAvailable = true,
                     Notes = ""
-                };
-                await _unitOfWork.TimeSlots.CreateAsync(newSlot);
+                });
                 currentTime += gapTime;
+            }
+
+            // Xử lý slot cũ: Disable nếu không nằm trong danh sách slot mới
+            foreach (var slot in existingSlots)
+            {
+                var match = newSlots.FirstOrDefault(s => s.StartTime == slot.StartTime && s.EndTime == slot.EndTime);
+                if (match == null)
+                {
+                    slot.IsAvailable = false; // Disable slot cũ không tồn tại trong danh sách mới
+                    _unitOfWork.TimeSlots.Update(slot);
+                }
+                else if (!slot.IsAvailable)
+                {
+                    slot.IsAvailable = true; // Bỏ disable nếu slot đã tồn tại nhưng đang bị disable
+                    _unitOfWork.TimeSlots.Update(slot);
+                }
+            }
+
+            // Thêm slot mới chưa có trong database
+            foreach (var newSlot in newSlots)
+            {
+                if (!existingSlots.Any(s => s.StartTime == newSlot.StartTime && s.EndTime == newSlot.EndTime))
+                {
+                    await _unitOfWork.TimeSlots.CreateAsync(newSlot);
+                }
             }
 
             return await _unitOfWork.SaveAsync() > 0;
         }
+
 
         public async Task<bool> Toogle(int id, string note)
         {

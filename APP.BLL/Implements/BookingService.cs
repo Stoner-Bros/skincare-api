@@ -90,7 +90,9 @@ namespace APP.BLL.Implements
                                  bts.TimeSlot.TimeSlotId,
                                  bts.TimeSlot.StartTime,
                                  bts.TimeSlot.EndTime,
-                             }).ToList() // Giữ lại để đảm bảo dữ liệu dạng List trong kết quả
+                             }).ToList(), // Giữ lại để đảm bảo dữ liệu dạng List trong kết quả
+
+                             SlotDate = b.BookingTimeSlots.Select(bts => bts.Date).FirstOrDefault()
                          });
 
             var totalRecords = await query.CountAsync(); // Tổng số bản ghi
@@ -164,7 +166,9 @@ namespace APP.BLL.Implements
                                  bts.TimeSlot.TimeSlotId,
                                  bts.TimeSlot.StartTime,
                                  bts.TimeSlot.EndTime,
-                             }).ToList() // Giữ lại để đảm bảo dữ liệu dạng List trong kết quả
+                             }).ToList(), // Giữ lại để đảm bảo dữ liệu dạng List trong kết quả
+
+                             SlotDate = b.BookingTimeSlots.Select(bts => bts.Date).FirstOrDefault()
                          });
 
             var totalRecords = await query.CountAsync(); // Tổng số bản ghi
@@ -238,7 +242,9 @@ namespace APP.BLL.Implements
                                  bts.TimeSlot.TimeSlotId,
                                  bts.TimeSlot.StartTime,
                                  bts.TimeSlot.EndTime,
-                             }).ToList() // Giữ lại để đảm bảo dữ liệu dạng List trong kết quả
+                             }).ToList(), // Giữ lại để đảm bảo dữ liệu dạng List trong kết quả
+
+                             SlotDate = b.BookingTimeSlots.Select(bts => bts.Date).FirstOrDefault()
                          });
 
             var totalRecords = await query.CountAsync(); // Tổng số bản ghi
@@ -312,7 +318,9 @@ namespace APP.BLL.Implements
                                  bts.TimeSlot.TimeSlotId,
                                  bts.TimeSlot.StartTime,
                                  bts.TimeSlot.EndTime,
-                             }).ToList() // Giữ lại để đảm bảo dữ liệu dạng List trong kết quả
+                             }).ToList(), // Giữ lại để đảm bảo dữ liệu dạng List trong kết quả
+
+                             SlotDate = b.BookingTimeSlots.Select(bts => bts.Date).FirstOrDefault()
                          });
             return booking.Any() ? booking.ElementAt(0) : null;
         }
@@ -335,7 +343,7 @@ namespace APP.BLL.Implements
             {
                 PaymentMethod = request.PaymentMethod,
             };
-            string orderInfo = "Đặt lịch Seoul Spa - ";
+            string orderInfo = "Seoul Spa - ";
 
             var result = await _unitOfWork.SaveWithTransactionAsync(async () =>
             {
@@ -407,7 +415,7 @@ namespace APP.BLL.Implements
             if (result)
             {
                 var paymentUrl = await _momoService.CreatePaymentUrl
-                    ($"SS{DateTime.Now:yyyyMMddHHmmss}", payment.Amount.ToString("0"), orderInfo, payment.PaymentMethod);
+                    ($"{payment.BookingId}SS{DateTime.Now:yyyyMMddHHmmss}", payment.Amount.ToString("0"), orderInfo, payment.PaymentMethod);
                 return paymentUrl;
             }
 

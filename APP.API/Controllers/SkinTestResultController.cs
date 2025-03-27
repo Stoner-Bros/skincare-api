@@ -32,6 +32,13 @@ namespace APP.API.Controllers
             return result == null ? NotFound() : Ok(result);
         }
 
+        [HttpGet("answer/{id}")]
+        public async Task<ActionResult<SkinTestResultResponse>> GetByAnswerId(int id)
+        {
+            var result = await _skinTestResultService.GetByAnswerIdAsync(id);
+            return result == null ? NotFound() : Ok(result);
+        }
+
         [HttpPost("{skinTestAnswerId}")]
         public async Task<ActionResult<SkinTestResultResponse>> CreateBySkinTestAnswerId(int skinTestAnswerId, SkinTestResultRequest request)
         {
