@@ -53,6 +53,20 @@ namespace APP.BLL.Implements
             return answer == null ? null : _mapper.Map<SkinTestAnswerResponse>(answer);
         }
 
+        public async Task<IEnumerable<SkinTestAnswerResponse>> GetByCustomerId(int customerId)
+        {
+            var answer = await _unitOfWork.SkinTestAnswers.GetQueryable()
+                .Where(a => a.CustomerId == customerId)
+                .Include(a => a.SkinTest)
+                .ThenInclude(st => st.SkinTestQuestions)
+                .Include(a => a.Customer)
+                .ThenInclude(c => c.Account)
+                .ThenInclude(a => a.AccountInfo)
+                .Include(a => a.Guest)
+                .ToListAsync();
+            return _mapper.Map<IEnumerable<SkinTestAnswerResponse>>(answer);
+        }
+
         public async Task<SkinTestAnswerResponse?> CreateSkinTestAnswerAsync(SkinTestAnswerRequest request)
         {
             // Check if the email belongs to a customer
@@ -111,6 +125,14 @@ namespace APP.BLL.Implements
             var createdAnswer = await _unitOfWork.SkinTestAnswers.CreateAsync(skinTestAnswer);
             await _unitOfWork.SaveAsync();
             return _mapper.Map<SkinTestAnswerResponse>(createdAnswer);
+        }
+
+        public async Task<bool> DeleteSkinTestAnswerAsync(int id)
+        {
+            var answer = await _unitOfWork.SkinTestAnswers.GetByIDAsync(id);
+            if (answer == null) return false;
+            _unitOfWork.SkinTestAnswers.Delete(answer);
+            return await _unitOfWork.SaveAsync() > 0;
         }
     }
 }

@@ -32,6 +32,13 @@ namespace APP.API.Controllers
             return answer == null ? NotFound() : Ok(answer);
         }
 
+        [HttpGet("customer/{customerId}")]
+        public async Task<ActionResult<SkinTestAnswerResponse>> GetByCustomerId(int customerId)
+        {
+            var answer = await _skinTestAnswerService.GetByCustomerId(customerId);
+            return answer == null ? NotFound() : Ok(answer);
+        }
+
         [HttpPost]
         public async Task<ActionResult<SkinTestAnswerResponse>> CreateSkinTestAnswer(SkinTestAnswerRequest request)
         {
@@ -44,6 +51,13 @@ namespace APP.API.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteSkinTestAnswer(int id)
+        {
+            var result = await _skinTestAnswerService.DeleteSkinTestAnswerAsync(id);
+            return result ? NoContent() : NotFound();
         }
     }
 }
