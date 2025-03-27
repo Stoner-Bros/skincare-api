@@ -90,7 +90,9 @@ namespace APP.BLL.Implements
                                  bts.TimeSlot.TimeSlotId,
                                  bts.TimeSlot.StartTime,
                                  bts.TimeSlot.EndTime,
-                             }).ToList() // Giữ lại để đảm bảo dữ liệu dạng List trong kết quả
+                             }).ToList(), // Giữ lại để đảm bảo dữ liệu dạng List trong kết quả
+
+                             SlotDate = b.BookingTimeSlots.Select(bts => bts.Date).FirstOrDefault()
                          });
 
             var totalRecords = await query.CountAsync(); // Tổng số bản ghi
@@ -164,7 +166,9 @@ namespace APP.BLL.Implements
                                  bts.TimeSlot.TimeSlotId,
                                  bts.TimeSlot.StartTime,
                                  bts.TimeSlot.EndTime,
-                             }).ToList() // Giữ lại để đảm bảo dữ liệu dạng List trong kết quả
+                             }).ToList(), // Giữ lại để đảm bảo dữ liệu dạng List trong kết quả
+
+                             SlotDate = b.BookingTimeSlots.Select(bts => bts.Date).FirstOrDefault()
                          });
 
             var totalRecords = await query.CountAsync(); // Tổng số bản ghi
@@ -238,7 +242,9 @@ namespace APP.BLL.Implements
                                  bts.TimeSlot.TimeSlotId,
                                  bts.TimeSlot.StartTime,
                                  bts.TimeSlot.EndTime,
-                             }).ToList() // Giữ lại để đảm bảo dữ liệu dạng List trong kết quả
+                             }).ToList(), // Giữ lại để đảm bảo dữ liệu dạng List trong kết quả
+
+                             SlotDate = b.BookingTimeSlots.Select(bts => bts.Date).FirstOrDefault()
                          });
 
             var totalRecords = await query.CountAsync(); // Tổng số bản ghi
@@ -312,7 +318,9 @@ namespace APP.BLL.Implements
                                  bts.TimeSlot.TimeSlotId,
                                  bts.TimeSlot.StartTime,
                                  bts.TimeSlot.EndTime,
-                             }).ToList() // Giữ lại để đảm bảo dữ liệu dạng List trong kết quả
+                             }).ToList(), // Giữ lại để đảm bảo dữ liệu dạng List trong kết quả
+
+                             SlotDate = b.BookingTimeSlots.Select(bts => bts.Date).FirstOrDefault()
                          });
             return booking.Any() ? booking.ElementAt(0) : null;
         }
