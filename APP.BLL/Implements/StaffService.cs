@@ -113,9 +113,14 @@ namespace APP.BLL.Implements
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var staff = await _unitOfWork.Staffs.GetByIDAsync(id);
+            var staff = await _unitOfWork.Staffs.GetQueryable()
+                .Include(s => s.Account)
+                .FirstOrDefaultAsync(s => s.AccountId == id);
             if (staff == null) return false;
-            _unitOfWork.Staffs.Delete(staff);
+            //_unitOfWork.Staffs.Delete(staff);
+
+            staff.Account.IsDeleted = true;
+            staff.Account.UpdateAt = DateTime.Now;
             return await _unitOfWork.SaveAsync() > 0;
         }
     }

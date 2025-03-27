@@ -75,7 +75,9 @@ namespace APP.BLL.Implements
         {
             var treatment = await _unitOfWork.Treatments.GetByIDAsync(id);
             if (treatment == null) return false;
-            _unitOfWork.Treatments.Delete(treatment);
+            //_unitOfWork.Treatments.Delete(treatment);
+            treatment.IsAvailable = false;
+            _unitOfWork.Treatments.Update(treatment);
             return await _unitOfWork.SaveAsync() > 0;
         }
     }

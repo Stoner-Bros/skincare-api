@@ -114,7 +114,9 @@ namespace APP.BLL.Implements
         {
             var blog = await _unitOfWork.Blogs.GetByIDAsync(id);
             if (blog == null) return false;
-            _unitOfWork.Blogs.Delete(blog);
+            //_unitOfWork.Blogs.Delete(blog);
+            blog.IsDeleted = true;
+            _unitOfWork.Blogs.Update(blog);
             return await _unitOfWork.SaveAsync() > 0;
         }
 

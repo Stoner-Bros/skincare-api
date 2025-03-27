@@ -65,7 +65,9 @@ namespace APP.BLL.Implements
         {
             var comment = await _unitOfWork.Comments.GetByIDAsync(id);
             if (comment == null) return false;
-            _unitOfWork.Comments.Delete(comment);
+            //_unitOfWork.Comments.Delete(comment);
+            comment.IsDeleted = true;
+            _unitOfWork.Comments.Update(comment);
             return await _unitOfWork.SaveAsync() > 0;
         }
 

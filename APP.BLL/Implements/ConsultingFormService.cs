@@ -168,7 +168,9 @@ namespace APP.BLL.Implements
         {
             var form = await _unitOfWork.ConsultingForms.GetByIDAsync(id);
             if (form == null) return false;
-            _unitOfWork.ConsultingForms.Delete(form);
+            //_unitOfWork.ConsultingForms.Delete(form);
+            form.Status = "Cancelled";
+            _unitOfWork.ConsultingForms.Update(form);
             return await _unitOfWork.SaveAsync() > 0;
         }
     }

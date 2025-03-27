@@ -69,7 +69,9 @@ namespace APP.BLL.Implements
         {
             var service = await _unitOfWork.Services.GetByIDAsync(id);
             if (service == null) return false;
-            _unitOfWork.Services.Delete(service);
+            //_unitOfWork.Services.Delete(service);
+            service.IsAvailable = false;
+            _unitOfWork.Services.Update(service);
             return await _unitOfWork.SaveAsync() > 0;
         }
     }

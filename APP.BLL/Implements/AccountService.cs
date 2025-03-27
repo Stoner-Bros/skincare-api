@@ -83,7 +83,10 @@ namespace APP.BLL.Implements
             {
                 try
                 {
-                    _unitOfWork.Accounts.Delete(account);
+                    //_unitOfWork.Accounts.Delete(account);
+                    account.IsDeleted = true;
+                    account.UpdateAt = DateTime.Now;
+                    _unitOfWork.Accounts.Update(account);
                     result = await _unitOfWork.SaveAsync() > 0;
                 }
                 catch (Exception ex)

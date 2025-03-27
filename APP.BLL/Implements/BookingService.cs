@@ -460,7 +460,8 @@ namespace APP.BLL.Implements
         {
             var booking = await _unitOfWork.Bookings.GetByIDAsync(id);
             if (booking == null) return false;
-            _unitOfWork.Bookings.Delete(booking);
+            //_unitOfWork.Bookings.Delete(booking);
+            booking.Status = "Cancelled";
             return await _unitOfWork.SaveAsync() > 0;
         }
     }

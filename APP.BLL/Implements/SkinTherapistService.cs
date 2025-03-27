@@ -114,9 +114,13 @@ namespace APP.BLL.Implements
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var therapist = await _unitOfWork.SkinTherapists.GetByIDAsync(id);
+            var therapist = await _unitOfWork.SkinTherapists.GetQueryable()
+                                .Include(s => s.Account)
+                                .FirstOrDefaultAsync(s => s.AccountId == id);
             if (therapist == null) return false;
-            _unitOfWork.SkinTherapists.Delete(therapist);
+            //_unitOfWork.SkinTherapists.Delete(therapist);
+            therapist.Account.IsDeleted = true;
+            therapist.Account.UpdateAt = DateTime.Now;
             return await _unitOfWork.SaveAsync() > 0;
         }
 
