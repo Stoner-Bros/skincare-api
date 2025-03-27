@@ -1,4 +1,5 @@
 ﻿using APP.API.Extensions;
+using APP.API.Hubs;
 using APP.API.Middlewares;
 using APP.BLL.BackgroundTask;
 using APP.BLL.Implements;
@@ -59,6 +60,7 @@ namespace APP.API
             builder.Services.AddScoped<ISkinTherapistScheduleService, SkinTherapistScheduleService>();
             builder.Services.AddScoped<IFeedbackService, FeedbackService>();
             builder.Services.AddScoped<IFeedbackReplyService, FeedbackReplyService>();
+            builder.Services.AddScoped<IChatService, ChatService>();
 
             builder.Services.AddScoped<MomoService>();
             // Đăng ký Background Service
@@ -68,6 +70,7 @@ namespace APP.API
             builder.Services.AddScoped<IEmailService, EmailService>();
 
             builder.Services.AddControllers();
+            builder.Services.AddSignalR();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             // Custom swagger
@@ -91,6 +94,7 @@ namespace APP.API
             app.UseAuthorization();
 
             app.MapControllers();
+            app.MapHub<ChatHub>("/chathub");
 
             app.Run();
         }
