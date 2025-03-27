@@ -10,5 +10,7 @@ namespace APP.BLL.Interfaces
         Task<IEnumerable<SkinTestAnswerResponse>> GetAllAsync();
         Task<SkinTestAnswerResponse?> GetByIdAsync(int id);
         Task<SkinTestAnswerResponse?> CreateSkinTestAnswerAsync(SkinTestAnswerRequest request);
+        Task<IEnumerable<SkinTestAnswerResponse>> GetByCustomerId(int customerId);
+        Task<bool> DeleteSkinTestAnswerAsync(int id);
     }
 }
