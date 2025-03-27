@@ -47,12 +47,14 @@ namespace APP.BLL.Implements
                              {
                                  f.Customer.AccountId,
                                  f.Customer.Account.AccountInfo.FullName,
+                                 f.Customer.Account.AccountInfo.Phone,
                              } : null,
 
                              Guest = f.GuestId != null ? new
                              {
                                  f.Guest.GuestId,
                                  f.Guest.FullName,
+                                 f.Guest.Phone,
                              } : null,
                          });
 
@@ -95,12 +97,14 @@ namespace APP.BLL.Implements
                              {
                                  f.Customer.AccountId,
                                  f.Customer.Account.AccountInfo.FullName,
+                                 f.Customer.Account.AccountInfo.Phone,
                              } : null,
 
                              Guest = f.GuestId != null ? new
                              {
                                  f.Guest.GuestId,
                                  f.Guest.FullName,
+                                 f.Guest.Phone,
                              } : null,
                          });
             return form.Any() ? form.ElementAt(0) : null;
