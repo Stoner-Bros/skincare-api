@@ -61,6 +61,9 @@ namespace APP.API
 
             builder.Services.AddScoped<MomoService>();
 
+            builder.Services.AddTransient<IEmailService, EmailService>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
+
             builder.Services.AddControllers();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
