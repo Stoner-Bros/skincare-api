@@ -7,6 +7,8 @@ namespace APP.DAL
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
+        public virtual DbSet<Entity.Entities.Thread> Threads { get; set; }
+        public virtual DbSet<Message> Messages { get; set; }
         public virtual DbSet<Account> Accounts { get; set; }
         public virtual DbSet<AccountInfo> AccountInfos { get; set; }
         public virtual DbSet<Blog> Blogs { get; set; }
@@ -37,6 +39,12 @@ namespace APP.DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Entity.Entities.Thread>()
+                .HasMany(a => a.Messages)
+                .WithOne(a => a.Thread)
+                .HasForeignKey(a => a.ThreadId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Account>()
                 .HasOne(a => a.AccountInfo)
                 .WithOne(a => a.Account)

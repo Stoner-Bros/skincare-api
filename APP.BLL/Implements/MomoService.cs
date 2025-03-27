@@ -109,8 +109,8 @@ namespace APP.BLL.Implements
                         [.. booking.BookingTimeSlots.Select(b => b.TimeSlotId)]
                     );
 
-                    booking.Status = "Canceled";
-                    booking.Payment.PaymentStatus = "Canceled";
+                    booking.Status = "Cancelled";
+                    booking.Payment.PaymentStatus = "Cancelled";
                     await _unitOfWork.SaveAsync();
                 }
                 return new { Success = false, Message = "Giao dịch thất bại", Code = resultCode };
