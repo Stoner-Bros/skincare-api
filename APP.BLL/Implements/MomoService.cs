@@ -65,14 +65,21 @@ namespace APP.BLL.Implements
             return responseData;
         }
 
-        public async Task<object> PaymentExecuteAsync(IFormCollection collection)
+        public async Task<object> PaymentExecuteAsync(JsonElement requestBody)
         {
-            if (!collection.ContainsKey("orderId"))
+            if (!requestBody.TryGetProperty("orderId", out var orderIdProperty) ||
+                !requestBody.TryGetProperty("resultCode", out var resultCodeProperty))
             {
-                return new { Success = false, Message = "Thiếu orderId trong request." };
+                return new { Success = false, Message = "Thiếu dữ liệu quan trọng." };
             }
 
-            var orderId = collection["orderId"].ToString();
+            string orderId = orderIdProperty.GetString();
+            int resultCode = resultCodeProperty.GetInt32();
+
+            if (resultCode != 0) // 0 = Giao dịch thành công
+            {
+                return new { Success = false, Message = "Giao dịch thất bại", Code = resultCode };
+            }
 
             if (!orderId.Contains("SS"))
             {
@@ -86,7 +93,6 @@ namespace APP.BLL.Implements
                 return new { Success = false, Message = "Không thể chuyển đổi BookingId thành số." };
             }
 
-
             var booking = await _unitOfWork.Bookings.GetQueryable()
                 .Include(b => b.Payment)
                 .FirstOrDefaultAsync(b => b.BookingId == bookingId);
@@ -96,20 +102,9 @@ namespace APP.BLL.Implements
                 return new { Success = false, Message = "Không tìm thấy Booking." };
             }
 
-            //if (booking.SkinTherapistId != null && booking.SkinTherapist != null && booking.BookingTimeSlots.Count != 0)
-            //{
-            //    await _skinTherapistScheduleService.UpdateScheduleAvailabilityAsync(
-            //        booking.SkinTherapist.AccountId,
-            //        booking.BookingTimeSlots.First().Date,
-            //        [.. booking.BookingTimeSlots.Select(b => b.TimeSlotId)]
-            //    );
-            //}
-
             booking.Status = "Paid";
             booking.Payment.PaymentStatus = "Paid";
             await _unitOfWork.SaveAsync();
-
-            // TODO: Xử lý thanh toán với bookingId
 
             return new { Success = true, BookingId = bookingId };
         }
