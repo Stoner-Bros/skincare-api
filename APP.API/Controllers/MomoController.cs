@@ -22,10 +22,10 @@ namespace APP.API.Controllers
             return Ok(paymentUrl);
         }
 
-        [HttpGet("callback")]
-        public IActionResult PaymentCallback([FromQuery] IQueryCollection query)
+        [HttpPost("callback")]
+        public IActionResult PaymentCallback([FromBody] IFormCollection body)
         {
-            var paymentResult = _momoService.PaymentExecuteAsync(query);
+            var paymentResult = _momoService.PaymentExecuteAsync(body);
             return Ok(paymentResult);
         }
     }

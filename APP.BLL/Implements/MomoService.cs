@@ -65,7 +65,7 @@ namespace APP.BLL.Implements
             return responseData;
         }
 
-        public async Task<object> PaymentExecuteAsync(IQueryCollection collection)
+        public async Task<object> PaymentExecuteAsync(IFormCollection collection)
         {
             if (!collection.ContainsKey("orderId"))
             {
