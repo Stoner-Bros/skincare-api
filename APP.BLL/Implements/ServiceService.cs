@@ -24,7 +24,8 @@ namespace APP.BLL.Implements
 
         public async Task<PaginationModel<ServiceResponse>> GetAllAsync(int pageNumber, int pageSize)
         {
-            var query = _unitOfWork.Services.GetQueryable();  // Truy vấn dữ liệu
+            var query = _unitOfWork.Services.GetQueryable()
+                .Where(a => a.IsAvailable);  // Truy vấn dữ liệu
 
             var totalRecords = await query.CountAsync(); // Tổng số bản ghi
             var services = await query

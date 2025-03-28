@@ -30,7 +30,7 @@ namespace APP.BLL.Implements
 
         public async Task<PaginationModel<StaffResponse>> GetAllAsync(int pageNumber, int pageSize)
         {
-            var query = _unitOfWork.Staffs.GetQueryable()
+            var query = _unitOfWork.Staffs.GetQueryable().Where(a => !a.Account.IsDeleted)
                                     .Include(s => s.Account)
                                     .ThenInclude(a => a.AccountInfo);  // Truy vấn dữ liệu
 

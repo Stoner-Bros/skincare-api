@@ -28,6 +28,7 @@ namespace APP.BLL.Implements
         public async Task<PaginationModel<BlogResponse>> GetAllAsync(int pageNumber, int pageSize)
         {
             var query = _unitOfWork.Blogs.GetQueryable()
+                                   .Where(a => !a.IsDeleted) // Lọc dữ liệu
                 .Include(b => b.Account)
                 .ThenInclude(a => a.AccountInfo);
 

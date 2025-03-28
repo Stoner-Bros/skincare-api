@@ -32,6 +32,7 @@ namespace APP.BLL.Implements
         public async Task<PaginationModel<SkinTherapistResponse>> GetAllAsync(int pageNumber, int pageSize)
         {
             var query = _unitOfWork.SkinTherapists.GetQueryable()
+                                     .Where(a => !a.Account.IsDeleted) // Lọc dữ liệu
                                     .Include(s => s.Account)
                                     .ThenInclude(a => a.AccountInfo);  // Truy vấn dữ liệu
 

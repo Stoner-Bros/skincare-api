@@ -31,6 +31,7 @@ namespace APP.BLL.Implements
         public async Task<PaginationModel<CustomerResponse>> GetAllAsync(int pageNumber, int pageSize)
         {
             var query = _unitOfWork.Customers.GetQueryable()
+                                     .Where(a => !a.Account.IsDeleted) // Lọc dữ liệu
                                     .Include(c => c.Account)
                                     .ThenInclude(a => a.AccountInfo);  // Truy vấn dữ liệu
 
