@@ -123,19 +123,19 @@ namespace APP.BLL.Implements
             var response = _mapper.Map<SkinTestResultResponse>(createdResult);
             response.Email = email;
 
-            var resultData = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(result.Result);
+            //var resultData = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(result.Result);
 
-            var placeholders = new Dictionary<string, string>
-            {
-                { "Subject", "Your Skin Test Result" },
-                { "UserName", userName },
-                { "TreatmentName", resultData["treatmentName"].GetString() },
-                { "Description", resultData["description"].GetString() },
-                { "Duration", resultData["duration"].GetInt32().ToString() },
-                { "Price", resultData["price"].GetInt32().ToString() },
-                { "Message", resultData["message"].GetString() }
-            };
-            await _emailService.SendEmail(email, "SkinTestResultEmail", placeholders);
+            //var placeholders = new Dictionary<string, string>
+            //{
+            //    { "Subject", "Your Skin Test Result" },
+            //    { "UserName", userName },
+            //    { "TreatmentName", resultData["treatmentName"].GetString() },
+            //    { "Description", resultData["description"].GetString() },
+            //    { "Duration", resultData["duration"].GetInt32().ToString() },
+            //    { "Price", resultData["price"].GetInt32().ToString() },
+            //    { "Message", resultData["message"].GetString() }
+            //};
+            //await _emailService.SendEmail(email, "SkinTestResultEmail", placeholders);
             return response;
         }
 
